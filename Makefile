@@ -1,68 +1,49 @@
-# See LICENSE file for copyright and license details
 # slstatus - suckless status monitor
-.POSIX:
+# See LICENSE file for copyright and license details.
 
 include config.mk
 
-REQ = util
-COM =\
-	components/battery\
-	components/cpu\
-	components/datetime\
-	components/disk\
-	components/entropy\
-	components/hostname\
-	components/ip\
-	components/kernel_release\
-	components/keyboard_indicators\
-	components/keymap\
-	components/load_avg\
-	components/netspeeds\
-	components/num_files\
-	components/ram\
-	components/run_command\
-	components/separator\
-	components/swap\
-	components/temperature\
-	components/uptime\
-	components/user\
-	components/volume\
-	components/wifi
+SRCS = $(wildcard *.c components/*.c)
+DEPS = $(SRCS:.c=.d)
+OBJS = $(SRCS:.c=.o)
 
-all: slstatus
+BIN = slstatus
 
-$(COM:=.o): config.mk $(REQ:=.h)
-slstatus.o: slstatus.c slstatus.h config.h config.mk $(REQ:=.h)
+$(BIN): $(OBJS)
+	$(CC) $^ -o $@ $(LDFLAGS)
 
-.c.o:
-	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
+%.o: %.c
+	$(CC) -o $@ $(CFLAGS) -c $<
+
+$(OBJS): config.h config.mk
 
 config.h:
-	cp config.def.h $@
+	cp config.def.h config.h
 
-slstatus: slstatus.o $(COM:=.o) $(REQ:=.o)
-	$(CC) -o $@ $(LDFLAGS) $(COM:=.o) $(REQ:=.o) slstatus.o $(LDLIBS)
+options:
+	@echo $(BIN) build options:
+	@echo "CFLAGS  = $(CFLAGS)"
+	@echo "LDFLAGS = $(LDFLAGS)"
+	@echo "CC      = $(CC)"
 
 clean:
-	rm -f slstatus slstatus.o $(COM:=.o) $(REQ:=.o)
+	@$(RM) --verbose -- $(BIN) $(OBJS) $(DEPS) $(BIN)-$(VERSION).tar.xz
 
 dist:
-	rm -rf "slstatus-$(VERSION)"
-	mkdir -p "slstatus-$(VERSION)/components"
-	cp -R LICENSE Makefile README config.mk config.def.h \
-	      slstatus.c $(COM:=.c) $(REQ:=.c) $(REQ:=.h) \
-	      slstatus.1 "slstatus-$(VERSION)"
-	tar -cf - "slstatus-$(VERSION)" | gzip -c > "slstatus-$(VERSION).tar.gz"
-	rm -rf "slstatus-$(VERSION)"
+	git archive --prefix $(BIN)-$(VERSION)/ HEAD | xz > $(BIN)-$(VERSION).tar.xz
 
-install: all
+install: $(BIN)
 	mkdir -p "$(DESTDIR)$(PREFIX)/bin"
-	cp -f slstatus "$(DESTDIR)$(PREFIX)/bin"
-	chmod 755 "$(DESTDIR)$(PREFIX)/bin/slstatus"
+	cp -f $(BIN) "$(DESTDIR)$(PREFIX)/bin"
+	chmod 755 "$(DESTDIR)$(PREFIX)/bin/$(BIN)"
 	mkdir -p "$(DESTDIR)$(MANPREFIX)/man1"
-	cp -f slstatus.1 "$(DESTDIR)$(MANPREFIX)/man1"
-	chmod 644 "$(DESTDIR)$(MANPREFIX)/man1/slstatus.1"
+	sed "s/VERSION/$(VERSION)/g" < $(BIN).1 > $(DESTDIR)$(MANPREFIX)/man1/$(BIN).1
+	chmod 644 "$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
 
 uninstall:
-	rm -f "$(DESTDIR)$(PREFIX)/bin/slstatus"
-	rm -f "$(DESTDIR)$(MANPREFIX)/man1/slstatus.1"
+	$(RM) "$(DESTDIR)$(PREFIX)/bin/$(BIN)" \
+		"$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
+
+.PHONY: options clean dist install uninstall
+
+-include $(DEPS)
