@@ -1,22 +1,21 @@
 # slstatus version
 VERSION = 0
+VERSION := $(VERSION)-sdw
 
-# customize below to fit your system
+# Customize below to fit your system
 
 # paths
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
 
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
+# includes and libs
+INCS = `pkg-config --cflags x11`
+LIBS = `pkg-config --libs   x11`
 
 # flags
-CPPFLAGS = -I$(X11INC) -D_DEFAULT_SOURCE
-CFLAGS   = -std=c99 -pedantic -Wall -Wextra -Os
-LDFLAGS  = -L$(X11LIB) -s
-# OpenBSD: add -lsndio
-# FreeBSD: add -lkvm
-LDLIBS   = -lX11
-
-# compiler and linker
-CC = cc
+CPPFLAGS += -DVERSION=\"$(VERSION)\"
+DEPFLAGS += -MMD -MP
+CFLAGS += -Os \
+		-Wno-format-nonliteral
+CFLAGS += $(INCS) $(CPPFLAGS) $(DEPFLAGS)
+LDFLAGS += $(LIBS)
