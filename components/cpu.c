@@ -17,36 +17,38 @@
 			return NULL;
 		}
 
+		// KHz to Hz
 		return fmt_human(freq * 1000, 1000);
 	}
 
 	const char *
 	cpu_perc(void)
 	{
-		static long double a[7];
-		long double b[7], sum;
+		static long double a[6];
+		long double b[6], sum;
 
 		memcpy(b, a, sizeof(b));
 		/* cpu user nice system idle iowait irq softirq */
-		if (pscanf("/proc/stat", "%*s %Lf %Lf %Lf %Lf %Lf %Lf %Lf",
-		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5], &a[6])
-		    != 7) {
+		if (pscanf("/proc/stat", "%*s %Lf %Lf %Lf %Lf %*s %Lf %Lf",
+		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5])
+		    != 6) {
 			return NULL;
 		}
 		if (b[0] == 0) {
 			return NULL;
 		}
 
-		sum = (b[0] + b[1] + b[2] + b[3] + b[4] + b[5] + b[6]) -
-		      (a[0] + a[1] + a[2] + a[3] + a[4] + a[5] + a[6]);
+		sum = (b[0] + b[1] + b[2] + b[3] + b[4] + b[5]) -
+		      (a[0] + a[1] + a[2] + a[3] + a[4] + a[5]);
 
 		if (sum == 0) {
 			return NULL;
 		}
 
+		// exclude idle
 		return bprintf("%d", (int)(100 *
-		               ((b[0] + b[1] + b[2] + b[5] + b[6]) -
-		                (a[0] + a[1] + a[2] + a[5] + a[6])) / sum));
+		               ((b[0] + b[1] + b[2] + b[4] + b[5]) -
+		                (a[0] + a[1] + a[2] + a[4] + a[5])) / sum));
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>
