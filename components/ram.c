@@ -9,13 +9,13 @@
 	const char *
 	ram_free(void)
 	{
-		uintmax_t free;
+		uintmax_t total, free, available;
 
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
 		           "MemAvailable: %ju kB\n",
-		           &free, &free, &free) != 3) {
+		           &total, &free, &available) != 3) {
 			return NULL;
 		}
 
@@ -25,15 +25,16 @@
 	const char *
 	ram_perc(void)
 	{
-		uintmax_t total, free, buffers, cached;
+		uintmax_t total, free, available, buffers, cached;
 
+		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
 		           "MemAvailable: %ju kB\n"
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &total, &free, &buffers, &buffers, &cached) != 5) {
+		           &total, &free, &available, &buffers, &cached) != 5) {
 			return NULL;
 		}
 
@@ -41,7 +42,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * ((total - free) - (buffers + cached))
+		return bprintf("%d", 100 * (total - free - (buffers + cached))
                                / total);
 	}
 
@@ -61,19 +62,20 @@
 	const char *
 	ram_used(void)
 	{
-		uintmax_t total, free, buffers, cached;
+		uintmax_t total, free, available, buffers, cached;
 
+		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
 		           "MemAvailable: %ju kB\n"
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &total, &free, &buffers, &buffers, &cached) != 5) {
+		           &total, &free, &available, &buffers, &cached) != 5) {
 			return NULL;
 		}
 
-		return fmt_human((total - free - buffers - cached) * 1024,
+		return fmt_human((total - free - (buffers + cached)) * 1024,
 		                 1024);
 	}
 #elif defined(__OpenBSD__)
