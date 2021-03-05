@@ -32,7 +32,7 @@ COM =\
 all: slstatus
 
 $(COM:=.o): config.mk $(REQ:=.h)
-slstatus.o: slstatus.c slstatus.h arg.h config.h config.mk $(REQ:=.h)
+slstatus.o: slstatus.c slstatus.h config.h config.mk $(REQ:=.h)
 
 .c.o:
 	$(CC) -o $@ -c $(CPPFLAGS) $(CFLAGS) $<
@@ -50,7 +50,7 @@ dist:
 	rm -rf "slstatus-$(VERSION)"
 	mkdir -p "slstatus-$(VERSION)/components"
 	cp -R LICENSE Makefile README config.mk config.def.h \
-	      arg.h slstatus.c $(COM:=.c) $(REQ:=.c) $(REQ:=.h) \
+	      slstatus.c $(COM:=.c) $(REQ:=.c) $(REQ:=.h) \
 	      slstatus.1 "slstatus-$(VERSION)"
 	tar -cf - "slstatus-$(VERSION)" | gzip -c > "slstatus-$(VERSION).tar.gz"
 	rm -rf "slstatus-$(VERSION)"

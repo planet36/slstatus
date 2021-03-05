@@ -7,7 +7,6 @@
 #include <time.h>
 #include <X11/Xlib.h>
 
-#include "arg.h"
 #include "slstatus.h"
 #include "util.h"
 
