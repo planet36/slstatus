@@ -51,7 +51,8 @@ keymap(void)
 	Display *dpy;
 	XkbDescRec *desc;
 	XkbStateRec state;
-	char *symbols, *layout;
+	char *symbols;
+	const char *layout;
 
 	layout = NULL;
 
@@ -75,7 +76,7 @@ keymap(void)
 		warn("XGetAtomName: Failed to get atom name");
 		goto end;
 	}
-	layout = (char *)bprintf("%s", get_layout(symbols, state.group));
+	layout = bprintf("%s", get_layout(symbols, state.group));
 	XFree(symbols);
 end:
 	XkbFreeKeyboard(desc, XkbSymbolsNameMask, 1);
