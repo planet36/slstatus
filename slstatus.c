@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include <X11/Xlib.h>
 
 #include "slstatus.h"
@@ -38,14 +39,16 @@ difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
 }
 
 static void
-usage(void)
+usage(const char* argv0)
 {
-	die("usage: %s [-s] [-1]", argv0);
+	printf("usage: %s [-h] [-1] [-s] [-v]\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
+	int ch;
+	const char *optstring = "+h1sv";
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
 	size_t i, len;
@@ -54,19 +57,35 @@ main(int argc, char *argv[])
 	const char *res;
 
 	sflag = 0;
-	ARGBEGIN {
+	while ((ch = getopt(argc, argv, optstring)) != -1) {
+		switch (ch) {
+		case 'h':
+			usage(argv[0]);
+			return 0;
+			break;
 		case '1':
 			done = 1;
 			/* fallthrough */
 		case 's':
 			sflag = 1;
 			break;
+		case 'v':
+			printf("%s " VERSION "\n", argv[0]);
+			return 0;
+			break;
 		default:
-			usage();
-	} ARGEND
+			usage(argv[0]);
+			return 1;
+			break;
+		}
+	}
+
+	argc -= optind;
+	//argv += optind;
 
 	if (argc) {
-		usage();
+		usage(argv[0]);
+		return 1;
 	}
 
 	memset(&act, 0, sizeof(act));
