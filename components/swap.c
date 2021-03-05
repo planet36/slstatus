@@ -96,7 +96,7 @@
 	const char *
 	swap_used(void)
 	{
-		long total, free, cached;
+		long total = 0, free = 0, cached = 0;
 
 		if (get_swap_info(&total, &free, &cached)) {
 			return NULL;
