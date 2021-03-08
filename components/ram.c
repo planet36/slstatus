@@ -6,6 +6,14 @@
 #if defined(__linux__)
 	#include <stdint.h>
 
+/*
+* https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
+* While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
+* kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
+* known, but is not corrected due to legacy concerns - programs rely on
+* /proc/meminfo to specify size with the "kB" string.
+*/
+
 	const char *
 	ram_free(void)
 	{
@@ -19,7 +27,7 @@
 			return NULL;
 		}
 
-		return fmt_human(free * 1024, 1024);
+		return fmt_human_3(free * 1024, 1024);
 	}
 
 	const char *
@@ -56,7 +64,7 @@
 			return NULL;
 		}
 
-		return fmt_human(total * 1024, 1024);
+		return fmt_human_3(total * 1024, 1024);
 	}
 
 	const char *
@@ -75,7 +83,7 @@
 			return NULL;
 		}
 
-		return fmt_human((total - free - (buffers + cached)) * 1024,
+		return fmt_human_3((total - free - (buffers + cached)) * 1024,
 		                 1024);
 	}
 #elif defined(__OpenBSD__)
