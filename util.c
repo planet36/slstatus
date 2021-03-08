@@ -121,6 +121,40 @@ fmt_human(uintmax_t num, int base)
 	return bprintf("%.1f %s", scaled, prefix[i]);
 }
 
+const char *
+fmt_human_3(uintmax_t num, int base)
+{
+	long double scaled;
+	size_t i, prefixlen;
+	const char **prefix;
+	int precision = 3;
+
+	switch (base) {
+	case 1000:
+		prefix = prefix_1000;
+		prefixlen = LEN(prefix_1000);
+		break;
+	case 1024:
+		prefix = prefix_1024;
+		prefixlen = LEN(prefix_1024);
+		break;
+	default:
+		warn("fmt_human: Invalid base");
+		return NULL;
+	}
+
+	scaled = num;
+	for (i = 0; i < prefixlen && scaled >= 999.5L; i++) {
+		scaled /= base;
+	}
+
+	if (scaled < 1) {
+		--precision;
+	}
+
+	return bprintf("%.*Lg %s", precision, scaled, prefix[i]);
+}
+
 int
 pscanf(const char *path, const char *fmt, ...)
 {
