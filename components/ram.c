@@ -17,13 +17,13 @@
 	const char *
 	ram_free(void)
 	{
-		uintmax_t memtotal, memfree, memavailable;
+		uintmax_t memavailable;
 
 		if (pscanf("/proc/meminfo",
-		           "MemTotal: %ju kB\n"
-		           "MemFree: %ju kB\n"
+		           "MemTotal: %*s kB\n" // discard
+		           "MemFree: %*s kB\n" // discard
 		           "MemAvailable: %ju kB\n",
-		           &memtotal, &memfree, &memavailable) != 3) {
+		           &memavailable) != 1) {
 			return NULL;
 		}
 
@@ -33,16 +33,16 @@
 	const char *
 	ram_perc(void)
 	{
-		uintmax_t memtotal, memfree, memavailable, buffers, cached;
+		uintmax_t memtotal, memfree, buffers, cached;
 
 		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
-		           "MemAvailable: %ju kB\n"
+		           "MemAvailable: %*s kB\n" // discard
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &memtotal, &memfree, &memavailable, &buffers, &cached) != 5) {
+		           &memtotal, &memfree, &buffers, &cached) != 4) {
 			return NULL;
 		}
 
@@ -69,16 +69,16 @@
 	const char *
 	ram_used(void)
 	{
-		uintmax_t memtotal, memfree, memavailable, buffers, cached;
+		uintmax_t memtotal, memfree, buffers, cached;
 
 		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
-		           "MemAvailable: %ju kB\n"
+		           "MemAvailable: %*s kB\n" // discard
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &memtotal, &memfree, &memavailable, &buffers, &cached) != 5) {
+		           &memtotal, &memfree, &buffers, &cached) != 4) {
 			return NULL;
 		}
 
