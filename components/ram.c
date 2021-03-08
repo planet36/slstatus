@@ -27,7 +27,7 @@
 			return NULL;
 		}
 
-		return fmt_human_3(memfree * 1024, 1024);
+		return fmt_human_3(memavailable * 1024, 1024);
 	}
 
 	const char *
