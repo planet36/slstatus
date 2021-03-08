@@ -17,23 +17,23 @@
 	const char *
 	ram_free(void)
 	{
-		uintmax_t total, free, available;
+		uintmax_t memtotal, memfree, memavailable;
 
 		if (pscanf("/proc/meminfo",
 		           "MemTotal: %ju kB\n"
 		           "MemFree: %ju kB\n"
 		           "MemAvailable: %ju kB\n",
-		           &total, &free, &available) != 3) {
+		           &memtotal, &memfree, &memavailable) != 3) {
 			return NULL;
 		}
 
-		return fmt_human_3(free * 1024, 1024);
+		return fmt_human_3(memfree * 1024, 1024);
 	}
 
 	const char *
 	ram_perc(void)
 	{
-		uintmax_t total, free, available, buffers, cached;
+		uintmax_t memtotal, memfree, memavailable, buffers, cached;
 
 		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
@@ -42,35 +42,34 @@
 		           "MemAvailable: %ju kB\n"
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &total, &free, &available, &buffers, &cached) != 5) {
+		           &memtotal, &memfree, &memavailable, &buffers, &cached) != 5) {
 			return NULL;
 		}
 
-		if (total == 0) {
+		if (memtotal == 0) {
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * (total - free - (buffers + cached))
-                               / total);
+		return bprintf("%d", 100 * (memtotal - memfree - (buffers + cached))
+                               / memtotal);
 	}
 
 	const char *
 	ram_total(void)
 	{
-		uintmax_t total;
+		uintmax_t memtotal;
 
-		if (pscanf("/proc/meminfo", "MemTotal: %ju kB\n", &total)
-		    != 1) {
+		if (pscanf("/proc/meminfo", "MemTotal: %ju kB\n", &memtotal) != 1) {
 			return NULL;
 		}
 
-		return fmt_human_3(total * 1024, 1024);
+		return fmt_human_3(memtotal * 1024, 1024);
 	}
 
 	const char *
 	ram_used(void)
 	{
-		uintmax_t total, free, available, buffers, cached;
+		uintmax_t memtotal, memfree, memavailable, buffers, cached;
 
 		// XXX: does not get SReclaimable
 		if (pscanf("/proc/meminfo",
@@ -79,11 +78,11 @@
 		           "MemAvailable: %ju kB\n"
 		           "Buffers: %ju kB\n"
 		           "Cached: %ju kB\n",
-		           &total, &free, &available, &buffers, &cached) != 5) {
+		           &memtotal, &memfree, &memavailable, &buffers, &cached) != 5) {
 			return NULL;
 		}
 
-		return fmt_human_3((total - free - (buffers + cached)) * 1024,
+		return fmt_human_3((memtotal - memfree - (buffers + cached)) * 1024,
 		                 1024);
 	}
 #elif defined(__OpenBSD__)
