@@ -90,7 +90,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * (swaptotal - swapfree - swapcached) / swaptotal);
+		return bprintf("%d", 100 * (swaptotal - swapfree) / swaptotal);
 	}
 
 	const char *
@@ -114,7 +114,7 @@
 			return NULL;
 		}
 
-		return fmt_human((swaptotal - swapfree - swapcached) * 1024, 1024);
+		return fmt_human((swaptotal - swapfree) * 1024, 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
