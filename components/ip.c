@@ -2,6 +2,8 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include "../util.h"
+
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -13,8 +15,6 @@
 	#include <netinet/in.h>
 	#include <sys/socket.h>
 #endif
-
-#include "../util.h"
 
 static const char *
 ip(const char *interface, unsigned short sa_family)

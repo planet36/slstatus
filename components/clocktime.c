@@ -2,10 +2,10 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include "../util.h"
+
 #include <math.h>
 #include <time.h>
-
-#include "../util.h"
 
 static double
 timespec_to_double(const struct timespec* ts)

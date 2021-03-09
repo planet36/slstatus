@@ -2,10 +2,10 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include "../util.h"
+
 #include <stdio.h>
 #include <unistd.h>
-
-#include "../util.h"
 
 const char *
 hostname(void)

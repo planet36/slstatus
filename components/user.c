@@ -1,10 +1,10 @@
 /* See LICENSE file for copyright and license details. */
+#include "../util.h"
+
 #include <pwd.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "../util.h"
 
 const char *
 gid(void)

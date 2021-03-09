@@ -1,11 +1,11 @@
 /* See LICENSE file for copyright and license details. */
+#include "../util.h"
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-
-#include "../util.h"
 
 #if defined(__OpenBSD__)
 	#include <sys/queue.h>

@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #if defined(__linux__)
+	#include "../util.h"
+
 	#include <stdint.h>
 	#include <stdio.h>
-
-	#include "../util.h"
 
 	const char *
 	entropy(void)

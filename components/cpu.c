@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
+#include "../util.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "../util.h"
 
 #if defined(__linux__)
 	const char *

@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
+#include "../util.h"
+
 #include <stdio.h>
 #include <sys/statvfs.h>
-
-#include "../util.h"
 
 const char *
 disk_free(const char *path)

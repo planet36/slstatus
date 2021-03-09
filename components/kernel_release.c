@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
+#include "../util.h"
+
 #include <sys/utsname.h>
 #include <stdio.h>
-
-#include "../util.h"
 
 const char *
 kernel_release(void)

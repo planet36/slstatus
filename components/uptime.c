@@ -2,11 +2,11 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include "../util.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
-
-#include "../util.h"
 
 #if defined(CLOCK_BOOTTIME)
 	#define UPTIME_FLAG CLOCK_BOOTTIME

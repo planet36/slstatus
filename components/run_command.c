@@ -2,10 +2,10 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include "../util.h"
+
 #include <stdio.h>
 #include <string.h>
-
-#include "../util.h"
 
 const char *
 run_command(const char *cmd)
