@@ -12,9 +12,9 @@
 #include <unistd.h>
 
 #define RSSI_TO_PERC(rssi) \
-			rssi >= -50 ? 100 : \
-			(rssi <= -100 ? 0 : \
-			(2 * (rssi + 100)))
+			((rssi) >= -50) ? 100 : \
+			(((rssi) <= -100) ? 0 : \
+			(2 * ((rssi) + 100)))
 
 #if defined(__linux__)
 	#include <limits.h>
