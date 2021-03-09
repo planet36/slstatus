@@ -4,8 +4,8 @@
 #endif
 #include "../util.h"
 
-#include <stdio.h>
 #include <limits.h>
+#include <stdio.h>
 
 extern const unsigned int interval;
 
