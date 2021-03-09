@@ -78,7 +78,7 @@
 			return NULL;
 		}
 
-		return fmt_human(swapfree * 1024, 1024);
+		return fmt_human_3(swapfree * 1024, 1024);
 	}
 
 	const char *
@@ -102,7 +102,7 @@
 			return NULL;
 		}
 
-		return fmt_human(swaptotal * 1024, 1024);
+		return fmt_human_3(swaptotal * 1024, 1024);
 	}
 
 	const char *
@@ -114,7 +114,7 @@
 			return NULL;
 		}
 
-		return fmt_human((swaptotal - swapfree) * 1024, 1024);
+		return fmt_human_3((swaptotal - swapfree) * 1024, 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
