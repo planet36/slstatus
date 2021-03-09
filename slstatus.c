@@ -2,6 +2,7 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#include <X11/Xlib.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -9,7 +10,6 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <X11/Xlib.h>
 
 #include "slstatus.h"
 #include "util.h"
