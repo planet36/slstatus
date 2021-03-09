@@ -10,6 +10,15 @@
 #include <string.h>
 
 #if defined(__linux__)
+
+/*
+* https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
+* While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
+* kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
+* known, but is not corrected due to legacy concerns - programs rely on
+* /proc/meminfo to specify size with the "kB" string.
+*/
+
 	static int
 	get_swap_info(long *s_total, long *s_free, long *s_cached)
 	{
@@ -63,49 +72,49 @@
 	const char *
 	swap_free(void)
 	{
-		long free;
+		long swapfree;
 
-		if (get_swap_info(NULL, &free, NULL)) {
+		if (get_swap_info(NULL, &swapfree, NULL)) {
 			return NULL;
 		}
 
-		return fmt_human(free * 1024, 1024);
+		return fmt_human(swapfree * 1024, 1024);
 	}
 
 	const char *
 	swap_perc(void)
 	{
-		long total, free, cached;
+		long swaptotal, swapfree, swapcached;
 
-		if (get_swap_info(&total, &free, &cached) || total == 0) {
+		if (get_swap_info(&swaptotal, &swapfree, &swapcached) || swaptotal == 0) {
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * (total - free - cached) / total);
+		return bprintf("%d", 100 * (swaptotal - swapfree - swapcached) / swaptotal);
 	}
 
 	const char *
 	swap_total(void)
 	{
-		long total;
+		long swaptotal;
 
-		if (get_swap_info(&total, NULL, NULL)) {
+		if (get_swap_info(&swaptotal, NULL, NULL)) {
 			return NULL;
 		}
 
-		return fmt_human(total * 1024, 1024);
+		return fmt_human(swaptotal * 1024, 1024);
 	}
 
 	const char *
 	swap_used(void)
 	{
-		long total = 0, free = 0, cached = 0;
+		long swaptotal = 0, swapfree = 0, swapcached = 0;
 
-		if (get_swap_info(&total, &free, &cached)) {
+		if (get_swap_info(&swaptotal, &swapfree, &swapcached)) {
 			return NULL;
 		}
 
-		return fmt_human((total - free - cached) * 1024, 1024);
+		return fmt_human((swaptotal - swapfree - swapcached) * 1024, 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
