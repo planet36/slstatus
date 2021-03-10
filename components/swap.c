@@ -97,9 +97,7 @@
 	const char *
 	swap_free(void)
 	{
-		long swapfree;
-
-		if (get_swap_info(NULL, &swapfree, NULL)) {
+		if (update_swap_info()) {
 			return NULL;
 		}
 
@@ -109,9 +107,7 @@
 	const char *
 	swap_perc(void)
 	{
-		long swaptotal, swapfree, swapcached;
-
-		if (get_swap_info(&swaptotal, &swapfree, &swapcached) || swaptotal == 0) {
+		if (update_swap_info() || swaptotal == 0) {
 			return NULL;
 		}
 
@@ -121,9 +117,7 @@
 	const char *
 	swap_total(void)
 	{
-		long swaptotal;
-
-		if (get_swap_info(&swaptotal, NULL, NULL)) {
+		if (update_swap_info()) {
 			return NULL;
 		}
 
@@ -133,9 +127,7 @@
 	const char *
 	swap_used(void)
 	{
-		long swaptotal = 0, swapfree = 0, swapcached = 0;
-
-		if (get_swap_info(&swaptotal, &swapfree, &swapcached)) {
+		if (update_swap_info()) {
 			return NULL;
 		}
 
