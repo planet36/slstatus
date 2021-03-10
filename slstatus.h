@@ -8,6 +8,9 @@ const char *battery_remaining(const char *);
 /* clocktime */
 const char *clocktime(void);
 
+/* counter */
+const char *counter(void);
+
 /* cpu */
 const char *cpu_freq(void);
 const char *cpu_perc(void);
