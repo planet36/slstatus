@@ -19,6 +19,31 @@
 * /proc/meminfo to specify size with the "kB" string.
 */
 
+	static uintmax_t swaptotal, swapfree;
+
+	static int
+	update_swap_info()
+	{
+		return pscanf("/proc/meminfo",
+		              "MemTotal: %*s kB\n" // discard
+		              "MemFree: %*s kB\n" // discard
+		              "MemAvailable: %*s kB\n" // discard
+		              "Buffers: %*s kB\n" // discard
+		              "Cached: %*s kB\n" // discard
+		              "SwapCached: %*s kB\n" // discard
+		              "Active: %*s kB\n" // discard
+		              "Inactive: %*s kB\n" // discard
+		              "Active(anon): %*s kB\n" // discard
+		              "Inactive(anon): %*s kB\n" // discard
+		              "Active(file): %*s kB\n" // discard
+		              "Inactive(file): %*s kB\n" // discard
+		              "Unevictable: %*s kB\n" // discard
+		              "Mlocked: %*s kB\n" // discard
+		              "SwapTotal: %ju kB\n"
+		              "SwapFree: %ju kB\n",
+		              &swaptotal, &swapfree) != 2;
+	}
+
 	static int
 	get_swap_info(long *s_total, long *s_free, long *s_cached)
 	{
