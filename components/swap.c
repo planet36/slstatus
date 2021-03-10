@@ -44,56 +44,6 @@
 		              &swaptotal, &swapfree) != 2;
 	}
 
-	static int
-	get_swap_info(long *s_total, long *s_free, long *s_cached)
-	{
-		FILE *fp;
-		struct {
-			const char *name;
-			const size_t len;
-			long *var;
-		} ent[] = {
-			{ "SwapTotal",  sizeof("SwapTotal") - 1,  s_total  },
-			{ "SwapFree",   sizeof("SwapFree") - 1,   s_free   },
-			{ "SwapCached", sizeof("SwapCached") - 1, s_cached },
-		};
-		size_t line_len = 0, i, left;
-		char *line = NULL;
-
-		/* get number of fields we want to extract */
-		for (i = 0, left = 0; i < LEN(ent); i++) {
-			if (ent[i].var) {
-				left++;
-			}
-		}
-
-		if (!(fp = fopen("/proc/meminfo", "r"))) {
-			warn("fopen '/proc/meminfo':");
-			return 1;
-		}
-
-		/* read file line by line and extract field information */
-		while (left > 0 && getline(&line, &line_len, fp) >= 0) {
-			for (i = 0; i < LEN(ent); i++) {
-				if (ent[i].var &&
-				    !strncmp(line, ent[i].name, ent[i].len)) {
-					sscanf(line + ent[i].len + 1,
-					       "%ld kB\n", ent[i].var);
-					left--;
-					break;
-				}
-			}
-		}
-		free(line);
-		if (ferror(fp)) {
-			warn("getline '/proc/meminfo':");
-			return 1;
-		}
-
-		fclose(fp);
-		return 0;
-	}
-
 	const char *
 	swap_free(void)
 	{
