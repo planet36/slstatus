@@ -14,6 +14,39 @@
 * /proc/meminfo to specify size with the "kB" string.
 */
 
+	static uintmax_t memtotal, memfree, buffers, cached, sreclaimable;
+
+	static int
+	update_mem_info()
+	{
+		return pscanf("/proc/meminfo",
+		              "MemTotal: %ju kB\n"
+		              "MemFree: %ju kB\n"
+		              "MemAvailable: %*s kB\n" // discard
+		              "Buffers: %ju kB\n"
+		              "Cached: %ju kB\n"
+		              "SwapCached: %*s kB\n" // discard
+		              "Active: %*s kB\n" // discard
+		              "Inactive: %*s kB\n" // discard
+		              "Active(anon): %*s kB\n" // discard
+		              "Inactive(anon): %*s kB\n" // discard
+		              "Active(file): %*s kB\n" // discard
+		              "Inactive(file): %*s kB\n" // discard
+		              "Unevictable: %*s kB\n" // discard
+		              "Mlocked: %*s kB\n" // discard
+		              "SwapTotal: %*s kB\n" // discard
+		              "SwapFree: %*s kB\n" // discard
+		              "Dirty: %*s kB\n" // discard
+		              "Writeback: %*s kB\n" // discard
+		              "AnonPages: %*s kB\n" // discard
+		              "Mapped: %*s kB\n" // discard
+		              "Shmem: %*s kB\n" // discard
+		              "KReclaimable: %*s kB\n" // discard
+		              "Slab: %*s kB\n" // discard
+		              "SReclaimable: %ju kB\n",
+		              &memtotal, &memfree, &buffers, &cached, &sreclaimable) != 5);
+	}
+
 	const char *
 	ram_free(void)
 	{
