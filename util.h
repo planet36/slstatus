@@ -1,4 +1,6 @@
 /* See LICENSE file for copyright and license details. */
+#pragma once
+
 #include <stddef.h>
 #include <stdint.h>
 

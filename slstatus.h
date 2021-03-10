@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#pragma once
 
 /* battery */
 const char *battery_perc(const char *);
