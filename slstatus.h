@@ -7,6 +7,7 @@ const char *battery_state(const char *);
 const char *battery_remaining(const char *);
 
 /* clocktime */
+const char *clockdiff(void);
 const char *clocktime(void);
 
 /* counter */

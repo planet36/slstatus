@@ -19,6 +19,7 @@ static const char unknown_str[] = "n/a";
  *                                                     NULL on OpenBSD/FreeBSD
  * battery_remaining   battery remaining HH:MM         battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
+ * clockdiff           elapsed time between calls      NULL
  * clocktime           high-resolution clock           NULL
  * counter             integer counter of samples      NULL
  * cpu_perc            cpu usage in percent            NULL
