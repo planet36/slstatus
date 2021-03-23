@@ -21,6 +21,7 @@ struct arg {
 };
 
 char buf[1024];
+double delta_time = 0; // seconds
 static volatile sig_atomic_t done;
 static Display *dpy;
 
@@ -91,6 +92,9 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
+	intspec.tv_sec = interval / 1000;
+	intspec.tv_nsec = (interval % 1000) * 1E6;
+
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = terminate;
 	sigaction(SIGINT,  &act, NULL);
@@ -137,10 +141,8 @@ main(int argc, char *argv[])
 				die("clock_gettime:");
 			}
 			difftimespec(&diff, &current, &start);
-
-			intspec.tv_sec = interval / 1000;
-			intspec.tv_nsec = (interval % 1000) * 1E6;
 			difftimespec(&wait, &intspec, &diff);
+			delta_time = timespec_to_double(&intspec);
 
 			if (wait.tv_sec >= 0) {
 				if (nanosleep(&wait, NULL) < 0 &&
