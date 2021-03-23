@@ -30,8 +30,13 @@ static Display *dpy;
 static void
 terminate(const int signo)
 {
-	if (signo != SIGUSR1)
+	if (signo == SIGALRM) {
+	}
+	else if (signo == SIGUSR1) {
+	}
+	else {
 		done = 1;
+	}
 }
 
 static void
@@ -96,10 +101,12 @@ main(int argc, char *argv[])
 	intspec.tv_nsec = (interval % 1000) * 1E6;
 
 	memset(&act, 0, sizeof(act));
+	sigemptyset(&act.sa_mask);
 	act.sa_handler = terminate;
 	sigaction(SIGINT,  &act, NULL);
 	sigaction(SIGTERM, &act, NULL);
 	act.sa_flags |= SA_RESTART;
+	sigaction(SIGALRM, &act, NULL);
 	sigaction(SIGUSR1, &act, NULL);
 
 	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
