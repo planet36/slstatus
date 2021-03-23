@@ -7,12 +7,6 @@
 #include <math.h>
 #include <time.h>
 
-static double
-timespec_to_double(const struct timespec* ts)
-{
-	return ts->tv_sec + copysign(ts->tv_nsec, ts->tv_sec) / 1E9;
-}
-
 const char *
 clockdiff(void)
 {

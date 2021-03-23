@@ -2,6 +2,7 @@
 #include "util.h"
 
 #include <errno.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -172,4 +173,10 @@ pscanf(const char *path, const char *fmt, ...)
 	fclose(fp);
 
 	return (n == EOF) ? -1 : n;
+}
+
+double
+timespec_to_double(const struct timespec *ts)
+{
+	return ts->tv_sec + copysign(ts->tv_nsec, ts->tv_sec) / 1E9;
 }

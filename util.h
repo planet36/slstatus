@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <time.h>
 
 extern char buf[1024];
 
@@ -16,3 +17,5 @@ const char *bprintf(const char *fmt, ...);
 const char *fmt_human(uintmax_t num, int base);
 const char *fmt_human_3(uintmax_t num, int base);
 int pscanf(const char *path, const char *fmt, ...);
+
+double timespec_to_double(const struct timespec *ts);
