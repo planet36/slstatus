@@ -60,6 +60,7 @@ main(int argc, char *argv[])
 	const char *optstring = "+h1sv";
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
+	double now_time, prev_time = 0;
 	size_t i, len;
 	int sflag, ret;
 	char status[MAXLEN];
@@ -117,6 +118,9 @@ main(int argc, char *argv[])
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
 			die("clock_gettime:");
 		}
+		now_time = timespec_to_double(&start);
+		delta_time = now_time - prev_time;
+		prev_time = now_time;
 
 		status[0] = '\0';
 		for (i = len = 0; i < LEN(args); i++) {
@@ -149,7 +153,6 @@ main(int argc, char *argv[])
 			}
 			difftimespec(&diff, &current, &start);
 			difftimespec(&wait, &intspec, &diff);
-			delta_time = timespec_to_double(&intspec);
 
 			if (wait.tv_sec >= 0) {
 				if (nanosleep(&wait, NULL) < 0 &&
