@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <stdio.h>
 
-extern const unsigned int interval;
+extern double delta_time; // seconds
 
 #if defined(__linux__)
 	#include <stdint.h>
@@ -33,7 +33,7 @@ extern const unsigned int interval;
 			return NULL;
 		}
 
-		return fmt_human_3((rxbytes - oldrxbytes) * 1000 / interval,
+		return fmt_human_3((rxbytes - oldrxbytes) / delta_time,
 		                 1024);
 	}
 
@@ -58,7 +58,7 @@ extern const unsigned int interval;
 			return NULL;
 		}
 
-		return fmt_human_3((txbytes - oldtxbytes) * 1000 / interval,
+		return fmt_human_3((txbytes - oldtxbytes) / delta_time,
 		                 1024);
 	}
 #elif defined(__OpenBSD__) | defined(__FreeBSD__)
@@ -99,7 +99,7 @@ extern const unsigned int interval;
 			return NULL;
 		}
 
-		return fmt_human((rxbytes - oldrxbytes) * 1000 / interval,
+		return fmt_human((rxbytes - oldrxbytes) / delta_time,
 		                 1024);
 	}
 
@@ -134,7 +134,7 @@ extern const unsigned int interval;
 			return NULL;
 		}
 
-		return fmt_human((txbytes - oldtxbytes) * 1000 / interval,
+		return fmt_human((txbytes - oldtxbytes) / delta_time,
 		                 1024);
 	}
 #endif
