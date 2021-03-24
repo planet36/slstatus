@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -23,6 +24,7 @@ struct arg {
 char buf[1024];
 double delta_time = 0; // seconds
 static volatile sig_atomic_t done;
+static volatile sig_atomic_t reset_alarm = 1;
 static Display *dpy;
 
 #include "config.h"
@@ -33,18 +35,11 @@ terminate(const int signo)
 	if (signo == SIGALRM) {
 	}
 	else if (signo == SIGUSR1) {
+		reset_alarm = 1;
 	}
 	else {
 		done = 1;
 	}
-}
-
-static void
-difftimespec(struct timespec *res, struct timespec *a, struct timespec *b)
-{
-	res->tv_sec = a->tv_sec - b->tv_sec - (a->tv_nsec < b->tv_nsec);
-	res->tv_nsec = a->tv_nsec - b->tv_nsec +
-	               (a->tv_nsec < b->tv_nsec) * 1E9;
 }
 
 static void
@@ -59,7 +54,14 @@ main(int argc, char *argv[])
 	int ch;
 	const char *optstring = "+h1sv";
 	struct sigaction act;
-	struct timespec start, current, diff, intspec, wait;
+	sigset_t newmask, oldmask, waitmask;
+	const struct timeval interval_tv = {
+	             .tv_sec = interval / 1000U,
+	             .tv_usec = (interval % 1000U) * 1000U};
+	const struct itimerval itv = {
+	             .it_interval = interval_tv,
+	             .it_value = interval_tv}; // If zero, the alarm is disabled.
+	struct timespec start;
 	double now_time, prev_time = 0;
 	size_t i, len;
 	int sflag, ret;
@@ -98,9 +100,6 @@ main(int argc, char *argv[])
 		return 1;
 	}
 
-	intspec.tv_sec = interval / 1000;
-	intspec.tv_nsec = (interval % 1000) * 1E6;
-
 	memset(&act, 0, sizeof(act));
 	sigemptyset(&act.sa_mask);
 	act.sa_handler = terminate;
@@ -114,7 +113,18 @@ main(int argc, char *argv[])
 		die("XOpenDisplay: Failed to open display");
 	}
 
+	sigemptyset(&waitmask);
+	sigfillset(&newmask);
+	sigprocmask(SIG_BLOCK, &newmask, &oldmask);
+
 	do {
+		if (reset_alarm) {
+			if (setitimer(ITIMER_REAL, &itv, NULL) < 0) {
+				die("setitimer:");
+			}
+			reset_alarm = 0;
+		}
+
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
 			die("clock_gettime:");
 		}
@@ -148,20 +158,11 @@ main(int argc, char *argv[])
 		}
 
 		if (!done) {
-			if (clock_gettime(CLOCK_MONOTONIC, &current) < 0) {
-				die("clock_gettime:");
-			}
-			difftimespec(&diff, &current, &start);
-			difftimespec(&wait, &intspec, &diff);
-
-			if (wait.tv_sec >= 0) {
-				if (nanosleep(&wait, NULL) < 0 &&
-				    errno != EINTR) {
-					die("nanosleep:");
-				}
-			}
+			(void)sigsuspend(&waitmask);
 		}
 	} while (!done);
+
+	sigprocmask(SIG_SETMASK, &oldmask, NULL);
 
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
