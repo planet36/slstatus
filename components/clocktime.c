@@ -10,24 +10,24 @@
 const char *
 clockdiff(void)
 {
-	double old_time;
-	static double new_time;
+	double prev_time;
+	static double now_time;
 	struct timespec ts;
 
-	old_time = new_time;
+	prev_time = now_time;
 
 	if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
 		warn("clock_gettime:");
 		return NULL;
 	}
 
-	new_time = timespec_to_double(&ts);
+	now_time = timespec_to_double(&ts);
 
-	if (old_time == 0) {
+	if (prev_time == 0) {
 		return NULL;
 	}
 
-	return bprintf("%.6f", new_time - old_time);
+	return bprintf("%.6f", now_time - prev_time);
 }
 
 const char *
