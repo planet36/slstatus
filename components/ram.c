@@ -97,7 +97,7 @@
 	#define LOG1024 10
 	#define pagetok(size, pageshift) (size_t)(size << (pageshift - LOG1024))
 
-	inline int
+	int
 	load_uvmexp(struct uvmexp *uvmexp)
 	{
 		int uvmexp_mib[] = {CTL_VM, VM_UVMEXP};
