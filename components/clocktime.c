@@ -1,4 +1,6 @@
-/* See LICENSE file for copyright and license details. */
+// SPDX-FileCopyrightText: Steven Ward
+// SPDX-License-Identifier: OSL-3.0
+
 #include "../util.h"
 
 #include <math.h>
