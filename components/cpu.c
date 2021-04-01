@@ -24,12 +24,12 @@
 	const char *
 	cpu_perc(void)
 	{
-		static long double a[6];
-		long double b[6], sum;
+		static uintmax_t a[6];
+		uintmax_t b[6], sum;
 
 		memcpy(b, a, sizeof(b));
 		/* cpu user nice system idle iowait irq softirq */
-		if (pscanf("/proc/stat", "%*s %Lf %Lf %Lf %Lf %*s %Lf %Lf",
+		if (pscanf("/proc/stat", "%*s %ju %ju %ju %ju %*s %ju %ju",
 		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5])
 		    != 6) {
 			return NULL;
@@ -45,10 +45,8 @@
 			return NULL;
 		}
 
-		// exclude idle
-		return bprintf("%d", (int)(100 *
-		               ((a[0] + a[1] + a[2] + a[4] + a[5]) -
-		                (b[0] + b[1] + b[2] + b[4] + b[5])) / sum));
+		return bprintf("%.0f", 100 *
+		               (1 - (double)(a[3] - b[3]) / (double)sum));
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>
