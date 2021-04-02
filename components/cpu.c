@@ -164,5 +164,5 @@ cpu_perc(void)
 
 	used = 1 - (double)(idle - oldidle) / (double)(sum - oldsum);
 
-	return bprintf("%.1f", 100 * used);
+	return bprintf("%.0f", 100 * used);
 }
