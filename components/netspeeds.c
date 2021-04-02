@@ -6,26 +6,18 @@
 
 extern double delta_time; // seconds
 
-static uintmax_t rxbytes, oldrxbytes;
-static uintmax_t txbytes, oldtxbytes;
-
 #if defined(__linux__)
 	static int
-	update_rx(const char *interface)
+	calc_rxbytes(const char *interface, uintmax_t *rxbytes)
 	{
 		char path[PATH_MAX];
-
-		oldrxbytes = rxbytes;
 
 		if (esnprintf(path, sizeof(path),
 		              "/sys/class/net/%s/statistics/rx_bytes",
 		              interface) < 0) {
 			return -1;
 		}
-		if (pscanf(path, "%ju", &rxbytes) != 1) {
-			return -1;
-		}
-		if (oldrxbytes == 0) {
+		if (pscanf(path, "%ju", rxbytes) != 1) {
 			return -1;
 		}
 
@@ -33,21 +25,16 @@ static uintmax_t txbytes, oldtxbytes;
 	}
 
 	static int
-	update_tx(const char *interface)
+	calc_txbytes(const char *interface, uintmax_t *txbytes)
 	{
 		char path[PATH_MAX];
-
-		oldtxbytes = txbytes;
 
 		if (esnprintf(path, sizeof(path),
 		              "/sys/class/net/%s/statistics/tx_bytes",
 		              interface) < 0) {
 			return -1;
 		}
-		if (pscanf(path, "%ju", &txbytes) != 1) {
-			return -1;
-		}
-		if (oldtxbytes == 0) {
+		if (pscanf(path, "%ju", txbytes) != 1) {
 			return -1;
 		}
 
@@ -61,31 +48,26 @@ static uintmax_t txbytes, oldtxbytes;
 	#include <net/if.h>
 
 	static int
-	update_rx(const char *interface)
+	calc_rxbytes(const char *interface, uintmax_t *rxbytes)
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
 		int if_ok = 0;
 
-		oldrxbytes = rxbytes;
-
 		if (getifaddrs(&ifal) == -1) {
 			warn("getifaddrs failed");
 			return -1;
 		}
-		rxbytes = 0;
+		*rxbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
-				rxbytes += ifd->ifi_ibytes, if_ok = 1;
+				*rxbytes += ifd->ifi_ibytes, if_ok = 1;
 			}
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
 			warn("reading 'if_data' failed");
-			return -1;
-		}
-		if (oldrxbytes == 0) {
 			return -1;
 		}
 
@@ -93,31 +75,26 @@ static uintmax_t txbytes, oldtxbytes;
 	}
 
 	static int
-	update_tx(const char *interface)
+	calc_txbytes(const char *interface, uintmax_t *txbytes)
 	{
 		struct ifaddrs *ifal, *ifa;
 		struct if_data *ifd;
 		int if_ok = 0;
 
-		oldtxbytes = txbytes;
-
 		if (getifaddrs(&ifal) == -1) {
 			warn("getifaddrs failed");
 			return -1;
 		}
-		txbytes = 0;
+		*txbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
 			   (ifd = (struct if_data *)ifa->ifa_data)) {
-				txbytes += ifd->ifi_obytes, if_ok = 1;
+				*txbytes += ifd->ifi_obytes, if_ok = 1;
 			}
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
 			warn("reading 'if_data' failed");
-			return -1;
-		}
-		if (oldtxbytes == 0) {
 			return -1;
 		}
 
@@ -128,7 +105,10 @@ static uintmax_t txbytes, oldtxbytes;
 const char *
 netspeed_rx(const char *interface)
 {
-	if (update_rx(interface) < 0) {
+	static uintmax_t rxbytes;
+	const uintmax_t oldrxbytes = rxbytes;
+
+	if (calc_rxbytes(interface, &rxbytes) < 0 || oldrxbytes == 0) {
 		return NULL;
 	}
 
@@ -138,7 +118,10 @@ netspeed_rx(const char *interface)
 const char *
 netspeed_tx(const char *interface)
 {
-	if (update_tx(interface) < 0) {
+	static uintmax_t txbytes;
+	const uintmax_t oldtxbytes = txbytes;
+
+	if (calc_txbytes(interface, &txbytes) < 0 || oldtxbytes == 0) {
 		return NULL;
 	}
 
