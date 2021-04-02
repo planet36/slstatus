@@ -27,7 +27,6 @@
 	static LIST_HEAD(, control) controls = LIST_HEAD_INITIALIZER(controls);
 	static struct pollfd *pfds;
 	static struct sioctl_hdl *hdl;
-	static int initialized;
 
 	/*
 	 * Call-back to obtain the description of all audio controls.
@@ -145,6 +144,7 @@
 	const char *
 	vol_perc(const char *unused)
 	{
+		static int initialized;
 		struct control *c;
 		int n, v, value;
 
