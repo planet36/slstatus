@@ -4,7 +4,6 @@
 #include "../util.h"
 
 #include <math.h>
-#include <time.h>
 
 const char *
 clockdiff(void)

@@ -6,7 +6,6 @@
 
 #if defined(__linux__)
 	#include <limits.h>
-	#include <stdint.h>
 	#include <unistd.h>
 
 	static const char *

@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #if defined(__linux__)
-	#include <stdint.h>
 
 /*
  * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo

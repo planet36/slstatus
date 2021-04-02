@@ -2,7 +2,6 @@
 #if defined(__linux__)
 	#include "../util.h"
 
-	#include <stdint.h>
 	#include <stdio.h>
 
 	const char *

@@ -2,7 +2,6 @@
 #include "../util.h"
 
 #include <stdio.h>
-#include <time.h>
 
 const char *
 datetime(const char *fmt)
