@@ -4,13 +4,23 @@
 #include <stdio.h>
 #include <sys/statvfs.h>
 
+static struct statvfs fs;
+
+static int
+update_fs(const char *path)
+{
+	if (statvfs(path, &fs) < 0) {
+		warn("statvfs '%s':", path);
+		return -1;
+	}
+
+	return 0;
+}
+
 const char *
 disk_free(const char *path)
 {
-	struct statvfs fs;
-
-	if (statvfs(path, &fs) < 0) {
-		warn("statvfs '%s':", path);
+	if (update_fs(path) < 0) {
 		return NULL;
 	}
 
@@ -20,24 +30,21 @@ disk_free(const char *path)
 const char *
 disk_perc(const char *path)
 {
-	struct statvfs fs;
+	double used;
 
-	if (statvfs(path, &fs) < 0) {
-		warn("statvfs '%s':", path);
+	if (update_fs(path) < 0) {
 		return NULL;
 	}
 
-	return bprintf("%.0f", 100 *
-	               (1 - (double)fs.f_bavail / (double)fs.f_blocks));
+	used = 1 - (double)fs.f_bavail / (double)fs.f_blocks;
+
+	return bprintf("%.0f", 100 * used);
 }
 
 const char *
 disk_total(const char *path)
 {
-	struct statvfs fs;
-
-	if (statvfs(path, &fs) < 0) {
-		warn("statvfs '%s':", path);
+	if (update_fs(path) < 0) {
 		return NULL;
 	}
 
@@ -47,10 +54,7 @@ disk_total(const char *path)
 const char *
 disk_used(const char *path)
 {
-	struct statvfs fs;
-
-	if (statvfs(path, &fs) < 0) {
-		warn("statvfs '%s':", path);
+	if (update_fs(path) < 0) {
 		return NULL;
 	}
 
