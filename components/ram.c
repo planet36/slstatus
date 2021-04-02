@@ -17,7 +17,7 @@
 	static uintmax_t memtotal, memfree, memavailable, buffers, cached, sreclaimable;
 
 	static int
-	update_mem_info()
+	update_mem_info(void)
 	{
 		return pscanf("/proc/meminfo",
 		              "MemTotal: %ju kB\n"
