@@ -3,8 +3,8 @@
 
 /* battery */
 const char *battery_perc(const char *);
-const char *battery_state(const char *);
 const char *battery_remaining(const char *);
+const char *battery_state(const char *);
 
 /* clocktime */
 const char *clockdiff(void);
@@ -81,12 +81,12 @@ const char *uptime(void);
 
 /* user */
 const char *gid(void);
-const char *username(void);
 const char *uid(void);
+const char *username(void);
 
 /* volume */
 const char *vol_perc(const char *card);
 
 /* wifi */
-const char *wifi_perc(const char *interface);
 const char *wifi_essid(const char *interface);
+const char *wifi_perc(const char *interface);
