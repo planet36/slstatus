@@ -135,7 +135,7 @@ clamp(double *x)
 	}
 }
 
-/* Map the real number in the inverval [0, 1]
+/* Map the real number in the interval [0, 1]
  * to an integer in the interval [0, b).
  */
 static size_t
@@ -146,7 +146,7 @@ map_to_uint(double x, size_t b)
 	return (size_t)(x * (b - 1U) + 0.5); // round to nearest int
 }
 
-/* x is in the inverval [0, 1].
+/* x is in the interval [0, 1].
  *
  * meter_width does not include the terminating null character.
  *
@@ -182,44 +182,48 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
 	*right_width = meter_width - *left_width - 1U;
 }
 
+/* Return a Unicode lower block character (whose height is proportional to x).
+ *
+ * x is in the interval [0, 1].
+ */
 wchar_t
 lower_blocks_1(double x)
 {
 	return lower_blocks[map_to_uint(x, LEN(lower_blocks))];
 }
 
+/* Return a Unicode horizontal 1/8 block character (whose height is proportional to x).
+ */
 wchar_t
 hor_lines_1(double x)
 {
 	return hor_lines[map_to_uint(x, LEN(hor_lines))];
 }
 
+/* Return a Unicode upper block character (whose height is proportional to x).
+ */
 wchar_t
 upper_blocks_1(double x)
 {
 	return upper_blocks[map_to_uint(x, LEN(upper_blocks))];
 }
 
-/* x is in the inverval [0, 1].
+/* Fill a meter with Unicode left block characters.
+ * The filled region is proportional to x, starting at the left.
  *
- * meter is a buffer capable of holding meter_cap wide characters (including
- * the terminating null character).
+ * x is in the interval [0, 1].
  *
- * meter will be null terminated if meter_cap is greater than 0.
+ * meter is a buffer capable of holding meter_width wide characters
+ * (not including the terminating null character).
+ *
+ * It is the caller's responsibility to null-terminate the meter buffer.
  */
 void
-left_blocks_meter(double x, wchar_t *meter, size_t meter_cap)
+left_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 {
-	size_t meter_width, left_width, blocks_index, right_width, i;
-
-	if (meter_cap == 0) {
-		return;
-	}
-
-	meter_width = meter_cap - 1U;
+	size_t left_width, blocks_index, right_width, i;
 
 	if (meter_width == 0) {
-		*meter = '\0';
 		return;
 	}
 
@@ -237,23 +241,17 @@ left_blocks_meter(double x, wchar_t *meter, size_t meter_cap)
 	for (i = 0; i < right_width; ++i) {
 		*meter++ = ' ';
 	}
-
-	*meter = '\0';
 }
 
+/* Fill a meter with a Unicode vertical 1/8 block character.
+ * The position of the filled character is proportional to x, starting at the left.
+ */
 void
-ver_lines_meter(double x, wchar_t *meter, size_t meter_cap)
+ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
 {
-	size_t meter_width, left_width, blocks_index, right_width, i;
-
-	if (meter_cap == 0) {
-		return;
-	}
-
-	meter_width = meter_cap - 1U;
+	size_t left_width, blocks_index, right_width, i;
 
 	if (meter_width == 0) {
-		*meter = '\0';
 		return;
 	}
 
@@ -281,23 +279,17 @@ ver_lines_meter(double x, wchar_t *meter, size_t meter_cap)
 			*meter++ = ' ';
 		}
 	}
-
-	*meter = '\0';
 }
 
+/* Fill a meter with Unicode right block characters.
+ * The filled region is proportional to x, starting at the right.
+ */
 void
-right_blocks_meter(double x, wchar_t *meter, size_t meter_cap)
+right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 {
-	size_t meter_width, left_width, blocks_index, right_width, i;
-
-	if (meter_cap == 0) {
-		return;
-	}
-
-	meter_width = meter_cap - 1U;
+	size_t left_width, blocks_index, right_width, i;
 
 	if (meter_width == 0) {
-		*meter = '\0';
 		return;
 	}
 
@@ -317,6 +309,4 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_cap)
 	for (i = 0; i < left_width; ++i) {
 		*meter++ = FULL_BLOCK;
 	}
-
-	*meter = '\0';
 }
