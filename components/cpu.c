@@ -5,24 +5,29 @@
 #include <stdio.h>
 #include <string.h>
 
+static uintmax_t freq; // Hz
+static double used;
+
 #if defined(__linux__)
-	const char *
-	cpu_freq(void)
+
+	static int
+	update_freq(void)
 	{
-		uintmax_t freq;
+		uintmax_t tmp_freq;
 
 		/* in kHz */
 		if (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/"
-		           "scaling_cur_freq", "%ju", &freq) != 1) {
-			return NULL;
+		           "scaling_cur_freq", "%ju", &tmp_freq) != 1) {
+			return -1;
 		}
 
-		// KHz to Hz
-		return fmt_human(freq * 1000, 1000);
+		freq = tmp_freq * 1000ULL; // KHz to Hz
+
+		return 0;
 	}
 
-	const char *
-	cpu_perc(void)
+	static int
+	update_used(void)
 	{
 		static uintmax_t a[6];
 		uintmax_t b[6], sum;
@@ -32,49 +37,52 @@
 		if (pscanf("/proc/stat", "%*s %ju %ju %ju %ju %*s %ju %ju",
 		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5])
 		    != 6) {
-			return NULL;
+			return -1;
 		}
 		if (b[0] == 0) {
-			return NULL;
+			return -1;
 		}
 
 		sum = (a[0] + a[1] + a[2] + a[3] + a[4] + a[5]) -
 		      (b[0] + b[1] + b[2] + b[3] + b[4] + b[5]);
 
 		if (sum == 0) {
-			return NULL;
+			return -1;
 		}
 
-		return bprintf("%.0f", 100 *
-		               (1 - (double)(a[3] - b[3]) / (double)sum));
+		used = 1 - (double)(a[3] - b[3]) / (double)sum;
+
+		return 0;
 	}
 #elif defined(__OpenBSD__)
 	#include <sys/param.h>
 	#include <sys/sched.h>
 	#include <sys/sysctl.h>
 
-	const char *
-	cpu_freq(void)
+	static int
+	update_freq(void)
 	{
-		int freq, mib[2];
+		int tmp_freq, mib[2];
 		size_t size;
 
 		mib[0] = CTL_HW;
 		mib[1] = HW_CPUSPEED;
 
-		size = sizeof(freq);
+		size = sizeof(tmp_freq);
 
 		/* in MHz */
-		if (sysctl(mib, 2, &freq, &size, NULL, 0) < 0) {
+		if (sysctl(mib, 2, &tmp_freq, &size, NULL, 0) < 0) {
 			warn("sysctl 'HW_CPUSPEED':");
-			return NULL;
+			return -1;
 		}
 
-		return fmt_human(freq * 1E6, 1000);
+		freq = tmp_freq * 1000000ULL; // MHz to Hz
+
+		return 0;
 	}
 
-	const char *
-	cpu_perc(void)
+	static int
+	update_used(void)
 	{
 		int mib[2];
 		static uintmax_t a[CPUSTATES];
@@ -89,76 +97,94 @@
 		memcpy(b, a, sizeof(b));
 		if (sysctl(mib, 2, &a, &size, NULL, 0) < 0) {
 			warn("sysctl 'KERN_CPTIME':");
-			return NULL;
+			return -1;
 		}
 		if (b[0] == 0) {
-			return NULL;
+			return -1;
 		}
 
 		sum = (a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] + a[CP_IDLE]) -
 		      (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] + b[CP_IDLE]);
 
 		if (sum == 0) {
-			return NULL;
+			return -1;
 		}
 
-		return bprintf("%d", 100 *
-		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
-		                 a[CP_INTR]) -
-		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR])) / sum);
+		used = 1 - (double)(a[CP_IDLE] - b[CP_IDLE]) / (double)sum;
+
+		return 0;
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/param.h>
 	#include <sys/sysctl.h>
 	#include <devstat.h>
 
-	const char *
-	cpu_freq(void)
+	static int
+	update_freq(void)
 	{
-		int freq;
+		int tmp_freq;
 		size_t size;
 
-		size = sizeof(freq);
+		size = sizeof(tmp_freq);
 		/* in MHz */
-		if (sysctlbyname("hw.clockrate", &freq, &size, NULL, 0) == -1
+		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) == -1
 				|| !size) {
 			warn("sysctlbyname 'hw.clockrate':");
-			return NULL;
+			return -1;
 		}
 
-		return fmt_human(freq * 1E6, 1000);
+		freq = tmp_freq * 1000000ULL; // MHz to Hz
+
+		return 0;
 	}
 
-	const char *
-	cpu_perc(void)
+	static int
+	update_used(void)
 	{
-		size_t size;
 		static long a[CPUSTATES];
 		long b[CPUSTATES], sum;
+		size_t size;
 
 		size = sizeof(a);
 		memcpy(b, a, sizeof(b));
 		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) == -1
 				|| !size) {
 			warn("sysctlbyname 'kern.cp_time':");
-			return NULL;
+			return -1;
 		}
 		if (b[0] == 0) {
-			return NULL;
+			return -1;
 		}
 
 		sum = (a[CP_USER] + a[CP_NICE] + a[CP_SYS] + a[CP_INTR] + a[CP_IDLE]) -
 		      (b[CP_USER] + b[CP_NICE] + b[CP_SYS] + b[CP_INTR] + b[CP_IDLE]);
 
 		if (sum == 0) {
-			return NULL;
+			return -1;
 		}
 
-		return bprintf("%d", 100 *
-		               ((a[CP_USER] + a[CP_NICE] + a[CP_SYS] +
-		                 a[CP_INTR]) -
-		                (b[CP_USER] + b[CP_NICE] + b[CP_SYS] +
-		                 b[CP_INTR])) / sum);
+		used = 1 - (double)(a[CP_IDLE] - b[CP_IDLE]) / (double)sum;
+
+		return 0;
 	}
 #endif
+
+const char *
+cpu_freq(void)
+{
+	if (update_freq() < 0) {
+		return NULL;
+	}
+
+	return fmt_human(freq, 1000);
+}
+
+const char *
+cpu_perc(void)
+{
+	if (update_used() < 0) {
+		return NULL;
+	}
+
+	return bprintf("%.0f", 100 * used);
+}
