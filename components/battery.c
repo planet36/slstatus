@@ -224,7 +224,7 @@
 				|| !len)
 			return NULL;
 
-		switch(state) {
+		switch (state) {
 			case 0:
 			case 2:
 				return "+";

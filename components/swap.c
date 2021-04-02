@@ -9,12 +9,12 @@
 #if defined(__linux__)
 
 /*
-* https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
-* While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
-* kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
-* known, but is not corrected due to legacy concerns - programs rely on
-* /proc/meminfo to specify size with the "kB" string.
-*/
+ * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
+ * While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
+ * kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
+ * known, but is not corrected due to legacy concerns - programs rely on
+ * /proc/meminfo to specify size with the "kB" string.
+ */
 
 	static uintmax_t swaptotal, swapfree;
 
@@ -180,17 +180,18 @@
 	#include <unistd.h>
 	#include <kvm.h>
 
-	static int getswapinfo(struct kvm_swap *swap_info, size_t size)
+	static int
+	getswapinfo(struct kvm_swap *swap_info, size_t size)
 	{
 		kvm_t *kd;
 
 		kd = kvm_openfiles(NULL, "/dev/null", NULL, 0, NULL);
-		if(kd == NULL) {
+		if (kd == NULL) {
 			warn("kvm_openfiles '/dev/null':");
 			return 0;
 		}
 
-		if(kvm_getswapinfo(kd, swap_info, size, 0 /* Unused flags */) == -1) {
+		if (kvm_getswapinfo(kd, swap_info, size, 0 /* Unused flags */) == -1) {
 			warn("kvm_getswapinfo:");
 			kvm_close(kd);
 			return 0;
@@ -206,7 +207,7 @@
 		struct kvm_swap swap_info[1];
 		long used, total;
 
-		if(!getswapinfo(swap_info, 1))
+		if (!getswapinfo(swap_info, 1))
 			return NULL;
 
 		total = swap_info[0].ksw_total;
@@ -221,7 +222,7 @@
 		struct kvm_swap swap_info[1];
 		long used, total;
 
-		if(!getswapinfo(swap_info, 1))
+		if (!getswapinfo(swap_info, 1))
 			return NULL;
 
 		total = swap_info[0].ksw_total;
@@ -236,7 +237,7 @@
 		struct kvm_swap swap_info[1];
 		long total;
 
-		if(!getswapinfo(swap_info, 1))
+		if (!getswapinfo(swap_info, 1))
 			return NULL;
 
 		total = swap_info[0].ksw_total;
@@ -250,7 +251,7 @@
 		struct kvm_swap swap_info[1];
 		long used;
 
-		if(!getswapinfo(swap_info, 1))
+		if (!getswapinfo(swap_info, 1))
 			return NULL;
 
 		used = swap_info[0].ksw_used;

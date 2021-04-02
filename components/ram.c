@@ -7,12 +7,12 @@
 	#include <stdint.h>
 
 /*
-* https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
-* While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
-* kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
-* known, but is not corrected due to legacy concerns - programs rely on
-* /proc/meminfo to specify size with the "kB" string.
-*/
+ * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
+ * While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
+ * kibibytes (KiB; 1 KiB equals 1024 B). This imprecision in /proc/meminfo is
+ * known, but is not corrected due to legacy concerns - programs rely on
+ * /proc/meminfo to specify size with the "kB" string.
+ */
 
 	static uintmax_t memtotal, memfree, memavailable, buffers, cached, sreclaimable;
 
@@ -97,7 +97,7 @@
 	#define LOG1024 10
 	#define pagetok(size, pageshift) (size_t)(size << (pageshift - LOG1024))
 
-	int
+	static int
 	load_uvmexp(struct uvmexp *uvmexp)
 	{
 		int uvmexp_mib[] = {CTL_VM, VM_UVMEXP};

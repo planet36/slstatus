@@ -178,7 +178,7 @@
 	#include <net/if.h>
 	#include <net80211/ieee80211_ioctl.h>
 
-	int
+	static int
 	load_ieee80211req(int sock, const char *interface, void *data, int type, size_t *len)
 	{
 		char warn_buf[256];
@@ -230,7 +230,7 @@
 			len = sizeof(info);
 			if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len)) {
 				rssi_dbm = info.sta.info[0].isi_noise +
- 					         info.sta.info[0].isi_rssi / 2;
+					         info.sta.info[0].isi_rssi / 2;
 
 				fmt = bprintf("%d", RSSI_TO_PERC(rssi_dbm));
 			}
@@ -256,7 +256,7 @@
 		fmt = NULL;
 		len = sizeof(ssid);
 		memset(&ssid, 0, len);
-		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len )) {
+		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len)) {
 			if (len < sizeof(ssid))
 				len += 1;
 			else
