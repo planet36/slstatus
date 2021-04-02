@@ -4,6 +4,7 @@
 
 #include <X11/Xlib.h>
 #include <errno.h>
+#include <locale.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,6 +65,8 @@ main(int argc, char *argv[])
 	int sflag, ret;
 	char status[MAXLEN];
 	const char *res;
+
+	setlocale(LC_CTYPE, "");
 
 	sflag = 0;
 	while ((ch = getopt(argc, argv, optstring)) != -1) {
