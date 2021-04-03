@@ -64,7 +64,7 @@
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
 		/* 70 is the max of /proc/net/wireless */
-		return bprintf("%d", (int)((float)cur / 70 * 100));
+		return bprintf("%.0f", 100.0 * cur / 70);
 	}
 
 	const char *
@@ -94,7 +94,7 @@
 
 		close(sockfd);
 
-		if (!strcmp(id, "")) {
+		if (id[0] == '\0') {
 			return NULL;
 		}
 
@@ -142,7 +142,8 @@
 			return 0;
 		}
 
-		return close(sockfd), 1;
+		close(sockfd);
+		return 1;
 	}
 
 	const char *
@@ -191,7 +192,7 @@
 		strlcpy(ireq.i_name, interface, sizeof(ireq.i_name));
 		if (ioctl(sock, SIOCG80211, &ireq) < 0) {
 			snprintf(warn_buf,  sizeof(warn_buf),
-					"ioctl: 'SIOCG80211': %d", type);
+			         "ioctl: 'SIOCG80211': %d", type);
 			warn(warn_buf);
 			return 0;
 		}
@@ -230,7 +231,7 @@
 			len = sizeof(info);
 			if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len)) {
 				rssi_dbm = info.sta.info[0].isi_noise +
-					         info.sta.info[0].isi_rssi / 2;
+				           info.sta.info[0].isi_rssi / 2;
 
 				fmt = bprintf("%d", RSSI_TO_PERC(rssi_dbm));
 			}
