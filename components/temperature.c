@@ -12,7 +12,7 @@
 			return NULL;
 		}
 
-		return bprintf("%ju", temp / 1000);
+		return bprintf("%0.f", temp / 1000.0);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdio.h>
@@ -35,13 +35,13 @@
 
 		size = sizeof(temp);
 
-		if (sysctl(mib, 5, &temp, &size, NULL, 0) < 0) {
+		if (sysctl(mib, LEN(mib), &temp, &size, NULL, 0) < 0) {
 			warn("sysctl 'SENSOR_TEMP':");
 			return NULL;
 		}
 
 		/* kelvin to celsius */
-		return bprintf("%d", (int)((float)(temp.value-273150000) / 1E6));
+		return bprintf("%.0f", (temp.value-273150000) / 1E6);
 	}
 #elif defined(__FreeBSD__)
 	#include <stdio.h>
@@ -62,6 +62,6 @@
 			return NULL;
 
 		/* kelvin to decimal celcius */
-		return bprintf("%d.%d", (temp - 2731) / 10, abs((temp - 2731) % 10));
+		return bprintf("%.0f", (temp - 2731) / 10.0);
 	}
 #endif
