@@ -36,7 +36,7 @@ disk_perc(const char *path)
 		return NULL;
 	}
 
-	used = 1 - (double)fs.f_bavail / (double)fs.f_blocks;
+	used = 1 - (double)fs.f_bavail / fs.f_blocks;
 
 	return bprintf("%.0f", 100 * used);
 }

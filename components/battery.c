@@ -106,9 +106,9 @@
 				return NULL;
 			}
 
-			timeleft = (double)charge_now / (double)current_now;
+			timeleft = (double)charge_now / current_now;
 			h = timeleft;
-			m = (timeleft - (double)h) * 60;
+			m = (uintmax_t)(timeleft - h) * 60;
 
 			return bprintf("%juh %jum", h, m);
 		}

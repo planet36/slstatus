@@ -55,7 +55,7 @@
 		size = sizeof(tmp_freq);
 
 		/* in MHz */
-		if (sysctl(mib, 2, &tmp_freq, &size, NULL, 0) < 0) {
+		if (sysctl(mib, LEN(mib), &tmp_freq, &size, NULL, 0) < 0) {
 			warn("sysctl 'HW_CPUSPEED':");
 			return -1;
 		}
@@ -77,7 +77,7 @@
 
 		size = sizeof(a);
 
-		if (sysctl(mib, 2, &a, &size, NULL, 0) < 0) {
+		if (sysctl(mib, LEN(mib), &a, &size, NULL, 0) < 0) {
 			warn("sysctl 'KERN_CPTIME':");
 			return -1;
 		}
@@ -162,7 +162,7 @@ cpu_perc(void)
 		return NULL;
 	}
 
-	used = 1 - (double)(idle - oldidle) / (double)(sum - oldsum);
+	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
 	return bprintf("%.0f", 100 * used);
 }
