@@ -110,11 +110,7 @@
 
 		size = sizeof(*uvmexp);
 
-		if (sysctl(uvmexp_mib, LEN(uvmexp_mib), uvmexp, &size, NULL, 0) >= 0) {
-			return 1;
-		}
-
-		return 0;
+		return sysctl(uvmexp_mib, LEN(uvmexp_mib), uvmexp, &size, NULL, 0);
 	}
 
 	const char *
@@ -123,13 +119,13 @@
 		struct uvmexp uvmexp;
 		int free_pages;
 
-		if (load_uvmexp(&uvmexp)) {
-			free_pages = uvmexp.npages - uvmexp.active;
-			return fmt_human(pagetok(free_pages, uvmexp.pageshift) *
-			                 1024, 1024);
+		if (load_uvmexp(&uvmexp) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		free_pages = uvmexp.npages - uvmexp.active;
+		return fmt_human(pagetok(free_pages, uvmexp.pageshift) *
+		                 1024, 1024);
 	}
 
 	const char *
@@ -137,11 +133,11 @@
 	{
 		struct uvmexp uvmexp;
 
-		if (load_uvmexp(&uvmexp)) {
-			return bprintf("%.0f", 100.0 * uvmexp.active / uvmexp.npages);
+		if (load_uvmexp(&uvmexp) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		return bprintf("%.0f", 100.0 * uvmexp.active / uvmexp.npages);
 	}
 
 	const char *
@@ -149,13 +145,13 @@
 	{
 		struct uvmexp uvmexp;
 
-		if (load_uvmexp(&uvmexp)) {
-			return fmt_human(pagetok(uvmexp.npages,
-			                         uvmexp.pageshift) * 1024,
-			                 1024);
+		if (load_uvmexp(&uvmexp) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		return fmt_human(pagetok(uvmexp.npages,
+		                         uvmexp.pageshift) * 1024,
+		                 1024);
 	}
 
 	const char *
@@ -163,13 +159,13 @@
 	{
 		struct uvmexp uvmexp;
 
-		if (load_uvmexp(&uvmexp)) {
-			return fmt_human(pagetok(uvmexp.active,
-			                         uvmexp.pageshift) * 1024,
-			                 1024);
+		if (load_uvmexp(&uvmexp) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		return fmt_human(pagetok(uvmexp.active,
+		                         uvmexp.pageshift) * 1024,
+		                 1024);
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/sysctl.h>
