@@ -181,8 +181,7 @@
 		size_t len;
 
 		len = sizeof(vm_stats);
-		if (sysctl(mib, LEN(mib), &vm_stats, &len, NULL, 0) == -1
-				|| !len)
+		if (sysctl(mib, LEN(mib), &vm_stats, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		return fmt_human(vm_stats.t_free * getpagesize(), 1024);
@@ -195,8 +194,8 @@
 		size_t len;
 
 		len = sizeof(npages);
-		if (sysctlbyname("vm.stats.vm.v_page_count", &npages, &len, NULL, 0) == -1
-				|| !len)
+		if (sysctlbyname("vm.stats.vm.v_page_count",
+		                 &npages, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		return fmt_human(npages * getpagesize(), 1024);
@@ -210,12 +209,12 @@
 		size_t len;
 
 		len = sizeof(npages);
-		if (sysctlbyname("vm.stats.vm.v_page_count", &npages, &len, NULL, 0) == -1
-				|| !len)
+		if (sysctlbyname("vm.stats.vm.v_page_count",
+		                 &npages, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
-		if (sysctlbyname("vm.stats.vm.v_active_count", &active, &len, NULL, 0) == -1
-				|| !len)
+		if (sysctlbyname("vm.stats.vm.v_active_count",
+		                 &active, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		return bprintf("%.0f", 100.0 * active / npages);
@@ -228,8 +227,8 @@
 		size_t len;
 
 		len = sizeof(active);
-		if (sysctlbyname("vm.stats.vm.v_active_count", &active, &len, NULL, 0) == -1
-				|| !len)
+		if (sysctlbyname("vm.stats.vm.v_active_count",
+		                 &active, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		return fmt_human(active * getpagesize(), 1024);
