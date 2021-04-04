@@ -53,11 +53,14 @@
 	const char *
 	swap_perc(void)
 	{
+		uintmax_t used;
+
 		if (update_swap_info() || swaptotal == 0) {
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * (swaptotal - swapfree) / swaptotal);
+		used = (swaptotal - swapfree);
+		return bprintf("%.0f", 100.0 * used / swaptotal);
 	}
 
 	const char *
@@ -146,7 +149,7 @@
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * used / total);
+		return bprintf("%.0f", 100.0 * used / total);
 	}
 
 	const char *
@@ -227,7 +230,7 @@
 		total = swap_info[0].ksw_total;
 		used = swap_info[0].ksw_used;
 
-		return bprintf("%d", used * 100 / total);
+		return bprintf("%.0f", 100.0 * used / total);
 	}
 
 	const char *
