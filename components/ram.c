@@ -13,7 +13,8 @@
  * /proc/meminfo to specify size with the "kB" string.
  */
 
-	static uintmax_t memtotal, memfree, memavailable, buffers, cached, sreclaimable;
+	static uintmax_t memtotal, memfree, memavailable, buffers, cached,
+	                 sreclaimable;
 
 	static int
 	update_mem_info(void)
@@ -43,7 +44,8 @@
 		              "KReclaimable: %*s kB\n" // discard
 		              "Slab: %*s kB\n" // discard
 		              "SReclaimable: %ju kB\n",
-		              &memtotal, &memfree, &memavailable, &buffers, &cached, &sreclaimable) != 6;
+		              &memtotal, &memfree, &memavailable, &buffers, &cached,
+		              &sreclaimable) != 6;
 	}
 
 	const char *
@@ -59,12 +61,14 @@
 	const char *
 	ram_perc(void)
 	{
+		uintmax_t used;
+
 		if (update_mem_info() || memtotal == 0) {
 			return NULL;
 		}
 
-		return bprintf("%d", 100 * (memtotal - memfree - (buffers + cached + sreclaimable))
-                               / memtotal);
+		used = memtotal - memfree - (buffers + cached + sreclaimable);
+		return bprintf("%.0f", 100.0 * used / memtotal);
 	}
 
 	const char *
@@ -80,12 +84,14 @@
 	const char *
 	ram_used(void)
 	{
+		uintmax_t used;
+
 		if (update_mem_info()) {
 			return NULL;
 		}
 
-		return fmt_human_3((memtotal - memfree - (buffers + cached + sreclaimable)) * 1024,
-		                 1024);
+		used = memtotal - memfree - (buffers + cached + sreclaimable);
+		return fmt_human_3(used * 1024, 1024);
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -94,17 +100,17 @@
 	#include <unistd.h>
 
 	#define LOG1024 10
-	#define pagetok(size, pageshift) (size_t)(size << (pageshift - LOG1024))
+	#define pagetok(size, pageshift) (size_t)((size) << ((pageshift) - LOG1024))
 
 	static int
 	load_uvmexp(struct uvmexp *uvmexp)
 	{
-		int uvmexp_mib[] = {CTL_VM, VM_UVMEXP};
+		int uvmexp_mib[2] = {CTL_VM, VM_UVMEXP};
 		size_t size;
 
 		size = sizeof(*uvmexp);
 
-		if (sysctl(uvmexp_mib, 2, uvmexp, &size, NULL, 0) >= 0) {
+		if (sysctl(uvmexp_mib, LEN(uvmexp_mib), uvmexp, &size, NULL, 0) >= 0) {
 			return 1;
 		}
 
@@ -130,11 +136,9 @@
 	ram_perc(void)
 	{
 		struct uvmexp uvmexp;
-		int percent;
 
 		if (load_uvmexp(&uvmexp)) {
-			percent = uvmexp.active * 100 / uvmexp.npages;
-			return bprintf("%d", percent);
+			return bprintf("%.0f", 100.0 * uvmexp.active / uvmexp.npages);
 		}
 
 		return NULL;
@@ -174,13 +178,14 @@
 	#include <vm/vm_param.h>
 
 	const char *
-	ram_free(void) {
+	ram_free(void)
+	{
 		struct vmtotal vm_stats;
-		int mib[] = {CTL_VM, VM_TOTAL};
+		int mib[2] = {CTL_VM, VM_TOTAL};
 		size_t len;
 
-		len = sizeof(struct vmtotal);
-		if (sysctl(mib, 2, &vm_stats, &len, NULL, 0) == -1
+		len = sizeof(vm_stats);
+		if (sysctl(mib, LEN(mib), &vm_stats, &len, NULL, 0) == -1
 				|| !len)
 			return NULL;
 
@@ -188,7 +193,8 @@
 	}
 
 	const char *
-	ram_total(void) {
+	ram_total(void)
+	{
 		long npages;
 		size_t len;
 
@@ -201,7 +207,8 @@
 	}
 
 	const char *
-	ram_perc(void) {
+	ram_perc(void)
+	{
 		long npages;
 		long active;
 		size_t len;
@@ -215,11 +222,12 @@
 				|| !len)
 			return NULL;
 
-		return bprintf("%d", active * 100 / npages);
+		return bprintf("%.0f", 100.0 * active / npages);
 	}
 
 	const char *
-	ram_used(void) {
+	ram_used(void)
+	{
 		long active;
 		size_t len;
 
