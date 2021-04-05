@@ -19,3 +19,5 @@ CFLAGS += -Os \
 		-Wno-format-nonliteral
 CFLAGS += $(INCS) $(CPPFLAGS) $(DEPFLAGS)
 LDFLAGS += $(LIBS)
+# OpenBSD: add -lsndio
+# FreeBSD: add -lkvm
