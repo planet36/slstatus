@@ -20,4 +20,4 @@ CFLAGS += -Os \
 CFLAGS += $(INCS) $(CPPFLAGS) $(DEPFLAGS)
 LDFLAGS += $(LIBS)
 # OpenBSD: add -lsndio
-# FreeBSD: add -lkvm
+# FreeBSD: add -lkvm -lsndio
