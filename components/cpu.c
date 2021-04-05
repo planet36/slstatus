@@ -1,8 +1,13 @@
 /* See LICENSE file for copyright and license details. */
+#include "../meter.h"
 #include "../util.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
+#define METER_WIDTH 10
+static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 #if defined(__linux__)
 	static int
@@ -143,6 +148,31 @@ cpu_freq(void)
 	}
 
 	return fmt_human(freq, 1000);
+}
+
+const char *
+cpu_meter(void)
+{
+	static uintmax_t idle;
+	uintmax_t oldidle = idle;
+	static uintmax_t sum;
+	uintmax_t oldsum = sum;
+	double used;
+	wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+		return NULL;
+	}
+
+	if (sum - oldsum == 0) {
+		return NULL;
+	}
+
+	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
+
+	left_blocks_meter(used, meter, METER_WIDTH);
+
+	return bprintf("%ls", meter);
 }
 
 const char *
