@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define HIST_WIDTH 10
+static_assert(HIST_WIDTH > 0, "HIST_WIDTH must be > 0");
+
 #define METER_WIDTH 10
 static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
@@ -148,6 +151,42 @@ cpu_freq(void)
 	}
 
 	return fmt_human(freq, 1000);
+}
+
+const char *
+cpu_hist(void)
+{
+	static uintmax_t idle;
+	uintmax_t oldidle = idle;
+	static uintmax_t sum;
+	uintmax_t oldsum = sum;
+	double used;
+	static int initialized;
+	size_t i;
+	static wchar_t hist[HIST_WIDTH + 1];
+
+	if (!initialized) {
+		wmemset(hist, ' ', HIST_WIDTH);
+		hist[HIST_WIDTH] = '\0';
+		initialized = 1;
+	}
+
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+		return NULL;
+	}
+
+	if (sum - oldsum == 0) {
+		return NULL;
+	}
+
+	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
+
+	for (i = 0; i < HIST_WIDTH - 1; ++i) {
+		hist[i] = hist[i+1];
+	}
+	hist[i] = lower_blocks_1(used);
+
+	return bprintf("%ls", hist);
 }
 
 const char *

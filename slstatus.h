@@ -15,6 +15,7 @@ const char *counter(void);
 
 /* cpu */
 const char *cpu_freq(void);
+const char *cpu_hist(void);
 const char *cpu_meter(void);
 const char *cpu_perc(void);
 
