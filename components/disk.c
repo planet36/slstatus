@@ -1,8 +1,13 @@
 /* See LICENSE file for copyright and license details. */
+#include "../meter.h"
 #include "../util.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <sys/statvfs.h>
+
+#define METER_WIDTH 10
+static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 static struct statvfs fs;
 
@@ -25,6 +30,23 @@ disk_free(const char *path)
 	}
 
 	return fmt_human(fs.f_frsize * fs.f_bavail, 1024);
+}
+
+const char *
+disk_meter(const char *path)
+{
+	double used;
+	wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+	if (update_fs(path) < 0) {
+		return NULL;
+	}
+
+	used = 1 - (double)fs.f_bavail / fs.f_blocks;
+
+	left_blocks_meter(used, meter, METER_WIDTH);
+
+	return bprintf("%ls", meter);
 }
 
 const char *

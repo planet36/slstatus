@@ -24,6 +24,7 @@ const char *datetime(const char *fmt);
 
 /* disk */
 const char *disk_free(const char *path);
+const char *disk_meter(const char *path);
 const char *disk_perc(const char *path);
 const char *disk_total(const char *path);
 const char *disk_used(const char *path);
