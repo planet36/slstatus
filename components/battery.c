@@ -113,7 +113,7 @@
 			h = timeleft;
 			m = (uintmax_t)(timeleft - h) * 60;
 
-			return bprintf("%juh %jum", h, m);
+			return bprintf("%juh %02jum", h, m);
 		}
 
 		return "";
