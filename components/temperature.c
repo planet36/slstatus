@@ -57,7 +57,7 @@
 
 		len = sizeof(temp);
 		snprintf(buf, sizeof(buf), "hw.acpi.thermal.%s.temperature", zone);
-		if (sysctlbyname(buf, &temp, &len, NULL, 0) == -1
+		if (sysctlbyname(buf, &temp, &len, NULL, 0) < 0
 				|| !len)
 			return NULL;
 

@@ -109,7 +109,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size = sizeof(tmp_freq);
 
 		/* in MHz */
-		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) == -1
+		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) < 0
 				|| !size) {
 			warn("sysctlbyname 'hw.clockrate':");
 			return -1;
@@ -128,7 +128,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 		size = sizeof(a);
 
-		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) == -1
+		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) < 0
 				|| !size) {
 			warn("sysctlbyname 'kern.cp_time':");
 			return -1;
