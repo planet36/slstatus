@@ -1,8 +1,13 @@
 /* See LICENSE file for copyright and license details. */
+#include "../meter.h"
 #include "../util.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
+
+#define METER_WIDTH 10
+static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 #if defined(__linux__)
 /*
@@ -26,6 +31,26 @@
 		}
 
 		return NULL;
+	}
+
+	const char *
+	battery_meter(const char *bat)
+	{
+		int cap_perc;
+		char path[PATH_MAX];
+		wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+		if (esnprintf(path, sizeof(path),
+		              "/sys/class/power_supply/%s/capacity", bat) < 0) {
+			return NULL;
+		}
+		if (pscanf(path, "%d", &cap_perc) != 1) {
+			return NULL;
+		}
+
+		left_blocks_meter(cap_perc / 100.0, meter, METER_WIDTH);
+
+		return bprintf("%ls", meter);
 	}
 
 	const char *
@@ -147,6 +172,21 @@
 	}
 
 	const char *
+	battery_meter(const char *unused)
+	{
+		struct apm_power_info apm_info;
+		wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+		if (load_apm_power_info(&apm_info) < 0) {
+			return NULL;
+		}
+
+		left_blocks_meter(apm_info.battery_life / 100.0, meter, METER_WIDTH);
+
+		return bprintf("%ls", meter);
+	}
+
+	const char *
 	battery_perc(const char *unused)
 	{
 		struct apm_power_info apm_info;
@@ -202,6 +242,23 @@
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/sysctl.h>
+
+	const char *
+	battery_meter(const char *unused)
+	{
+		int cap_perc;
+		size_t len;
+		wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+		len = sizeof(cap_perc);
+		if (sysctlbyname("hw.acpi.battery.life", &cap_perc, &len, NULL, 0) < 0
+				|| !len)
+			return NULL;
+
+		left_blocks_meter(cap_perc / 100.0, meter, METER_WIDTH);
+
+		return bprintf("%ls", meter);
+	}
 
 	const char *
 	battery_perc(const char *unused)

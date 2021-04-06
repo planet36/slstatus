@@ -13,6 +13,8 @@ static const char unknown_str[] = "n/a";
 /*
  * function            description                     argument (example)
  *
+ * battery_meter       battery meter                   battery name (BAT0)
+ *                                                     NULL on OpenBSD/FreeBSD
  * battery_perc        battery percentage              battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
  * battery_remaining   battery remaining HH:MM         battery name (BAT0)
