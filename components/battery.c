@@ -90,7 +90,7 @@
 		if (!pick(bat, "/sys/class/power_supply/%s/charge_now",
 		          "/sys/class/power_supply/%s/energy_now", path,
 		          sizeof(path)) ||
-		    pscanf(path, "%ju", &charge_now) < 0) {
+		    pscanf(path, "%ju", &charge_now) != 1) {
 			return NULL;
 		}
 
@@ -98,7 +98,7 @@
 			if (!pick(bat, "/sys/class/power_supply/%s/current_now",
 			          "/sys/class/power_supply/%s/power_now", path,
 			          sizeof(path)) ||
-			    pscanf(path, "%ju", &current_now) < 0) {
+			    pscanf(path, "%ju", &current_now) != 1) {
 				return NULL;
 			}
 
