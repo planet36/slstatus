@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static uintmax_t free_bytes, total_bytes, used_bytes;
+
 #if defined(__linux__)
 
 /*
@@ -15,12 +17,12 @@
  * /proc/meminfo to specify size with the "kB" string.
  */
 
-	static uintmax_t swaptotal, swapfree;
-
 	static int
 	update_swap_info()
 	{
-		return pscanf("/proc/meminfo",
+		uintmax_t swaptotal, swapfree;
+
+		if (pscanf("/proc/meminfo",
 		              "MemTotal: %*s kB\n" // discard
 		              "MemFree: %*s kB\n" // discard
 		              "MemAvailable: %*s kB\n" // discard
@@ -37,50 +39,15 @@
 		              "Mlocked: %*s kB\n" // discard
 		              "SwapTotal: %ju kB\n"
 		              "SwapFree: %ju kB\n",
-		              &swaptotal, &swapfree) != 2;
-	}
-
-	const char *
-	swap_free(void)
-	{
-		if (update_swap_info()) {
-			return NULL;
+		              &swaptotal, &swapfree) != 2) {
+			return -1;
 		}
 
-		return fmt_human_3(swapfree * 1024, 1024);
-	}
+		free_bytes = swapfree * 1024;
+		total_bytes = swaptotal * 1024;
+		used_bytes = total_bytes - free_bytes;
 
-	const char *
-	swap_perc(void)
-	{
-		uintmax_t used;
-
-		if (update_swap_info() || swaptotal == 0) {
-			return NULL;
-		}
-
-		used = (swaptotal - swapfree);
-		return bprintf("%.0f", 100.0 * used / swaptotal);
-	}
-
-	const char *
-	swap_total(void)
-	{
-		if (update_swap_info()) {
-			return NULL;
-		}
-
-		return fmt_human_3(swaptotal * 1024, 1024);
-	}
-
-	const char *
-	swap_used(void)
-	{
-		if (update_swap_info()) {
-			return NULL;
-		}
-
-		return fmt_human_3((swaptotal - swapfree) * 1024, 1024);
+		return 0;
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -89,87 +56,45 @@
 	#include <unistd.h>
 
 	static int
-	getstats(int *total, int *used)
+	update_swap_info()
 	{
 		struct swapent *sep, *fsep;
 		int rnswap, nswap, i;
 
 		if ((nswap = swapctl(SWAP_NSWAP, 0, 0)) < 1) {
 			warn("swaptctl 'SWAP_NSWAP':");
-			return 1;
+			return -1;
 		}
 		if (!(fsep = sep = calloc(nswap, sizeof(*sep)))) {
 			warn("calloc 'nswap':");
-			return 1;
+			return -1;
 		}
 		if ((rnswap = swapctl(SWAP_STATS, (void *)sep, nswap)) < 0) {
 			warn("swapctl 'SWAP_STATA':");
-			return 1;
+			free(fsep);
+			return -1;
 		}
 		if (nswap != rnswap) {
 			warn("getstats: SWAP_STATS != SWAP_NSWAP");
-			return 1;
+			free(fsep);
+			return -1;
 		}
 
-		*total = 0;
-		*used = 0;
+		total_bytes = 0;
+		used_bytes = 0;
 
 		for (i = 0; i < rnswap; i++) {
-			*total += sep->se_nblks >> 1;
-			*used += sep->se_inuse >> 1;
+			total_bytes += sep->se_nblks >> 1;
+			used_bytes += sep->se_inuse >> 1;
 		}
+
+		total_bytes *= 1024;
+		used_bytes *= 1024;
+		free_bytes = total_bytes - used_bytes;
 
 		free(fsep);
 
 		return 0;
-	}
-
-	const char *
-	swap_free(void)
-	{
-		int total, used;
-
-		if (getstats(&total, &used)) {
-			return NULL;
-		}
-
-		return fmt_human((total - used) * 1024, 1024);
-	}
-
-	const char *
-	swap_perc(void)
-	{
-		int total, used;
-
-		if (getstats(&total, &used) || total == 0) {
-			return NULL;
-		}
-
-		return bprintf("%.0f", 100.0 * used / total);
-	}
-
-	const char *
-	swap_total(void)
-	{
-		int total, used;
-
-		if (getstats(&total, &used)) {
-			return NULL;
-		}
-
-		return fmt_human(total * 1024, 1024);
-	}
-
-	const char *
-	swap_used(void)
-	{
-		int total, used;
-
-		if (getstats(&total, &used)) {
-			return NULL;
-		}
-
-		return fmt_human(used * 1024, 1024);
 	}
 #elif defined(__FreeBSD__)
 	#include <stdlib.h>
@@ -179,9 +104,10 @@
 	#include <kvm.h>
 
 	static int
-	getswapinfo(struct kvm_swap *swap_info, size_t size)
+	update_swap_info()
 	{
 		kvm_t *kd;
+		struct kvm_swap swap_info[1];
 
 		kd = kvm_openfiles(NULL, "/dev/null", NULL, 0, NULL);
 		if (kd == NULL) {
@@ -189,70 +115,60 @@
 			return -1;
 		}
 
-		if (kvm_getswapinfo(kd, swap_info, size, 0 /* Unused flags */) < 0) {
+		if (kvm_getswapinfo(kd, swap_info, LEN(swap_info), 0 /* Unused flags */) < 0) {
 			warn("kvm_getswapinfo:");
 			kvm_close(kd);
 			return -1;
 		}
 
-		return kvm_close(kd);
-	}
+		if (kvm_close(kd) < 0) {
+			return -1;
+		}
 
-	const char *
-	swap_free(void)
-	{
-		struct kvm_swap swap_info[1];
-		long used, total;
+		total_bytes = swap_info[0].ksw_total * getpagesize();
+		used_bytes = swap_info[0].ksw_used * getpagesize();
+		free_bytes = total_bytes - used_bytes;
 
-		if (getswapinfo(swap_info, 1) < 0)
-			return NULL;
-
-		total = swap_info[0].ksw_total;
-		used = swap_info[0].ksw_used;
-
-		return fmt_human((total - used) * getpagesize(), 1024);
-	}
-
-	const char *
-	swap_perc(void)
-	{
-		struct kvm_swap swap_info[1];
-		long used, total;
-
-		if (getswapinfo(swap_info, 1) < 0)
-			return NULL;
-
-		total = swap_info[0].ksw_total;
-		used = swap_info[0].ksw_used;
-
-		return bprintf("%.0f", 100.0 * used / total);
-	}
-
-	const char *
-	swap_total(void)
-	{
-		struct kvm_swap swap_info[1];
-		long total;
-
-		if (getswapinfo(swap_info, 1) < 0)
-			return NULL;
-
-		total = swap_info[0].ksw_total;
-
-		return fmt_human(total * getpagesize(), 1024);
-	}
-
-	const char *
-	swap_used(void)
-	{
-		struct kvm_swap swap_info[1];
-		long used;
-
-		if (getswapinfo(swap_info, 1) < 0)
-			return NULL;
-
-		used = swap_info[0].ksw_used;
-
-		return fmt_human(used * getpagesize(), 1024);
+		return 0;
 	}
 #endif
+
+const char *
+swap_free(void)
+{
+	if (update_swap_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(free_bytes, 1024);
+}
+
+const char *
+swap_perc(void)
+{
+	if (update_swap_info() < 0 || total_bytes == 0) {
+		return NULL;
+	}
+
+	return bprintf("%.0f", 100.0 * used_bytes / total_bytes);
+}
+
+const char *
+swap_total(void)
+{
+	if (update_swap_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(total_bytes, 1024);
+}
+
+const char *
+swap_used(void)
+{
+	if (update_swap_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(used_bytes, 1024);
+}
