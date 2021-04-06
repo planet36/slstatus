@@ -83,9 +83,11 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 			return NULL;
 		}
 
+		// TODO: maybe add this: uvmexp.inactive
+		free_bytes = pagetok(uvmexp.free, uvmexp.pageshift) * 1024;
 		total_bytes = pagetok(uvmexp.npages, uvmexp.pageshift) * 1024;
+		// TODO: maybe add this: uvmexp.wired
 		used_bytes = pagetok(uvmexp.active, uvmexp.pageshift) * 1024;
-		free_bytes = total_bytes - used_bytes;
 
 		return 0;
 	}
@@ -116,8 +118,10 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		                 &active_pages, &len, NULL, 0) < 0 || !len)
 			return -1;
 
+		// TODO: maybe add these: v_cache_count, v_inactive_count
 		free_bytes = free_pages* getpagesize();
 		total_bytes = total_pages * getpagesize();
+		// TODO: maybe add this: v_wire_count
 		used_bytes = active_pages * getpagesize();
 
 		return 0;
