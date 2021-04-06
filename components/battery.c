@@ -129,16 +129,18 @@
 		fd = open("/dev/apm", O_RDONLY);
 		if (fd < 0) {
 			warn("open '/dev/apm':");
-			return 0;
+			return -1;
 		}
 
 		memset(apm_info, 0, sizeof(struct apm_power_info));
 		if (ioctl(fd, APM_IOC_GETPOWER, apm_info) < 0) {
 			warn("ioctl 'APM_IOC_GETPOWER':");
 			close(fd);
-			return 0;
+			return -1;
 		}
-		return close(fd), 1;
+
+		close(fd);
+		return 0;
 	}
 
 	const char *
@@ -146,11 +148,11 @@
 	{
 		struct apm_power_info apm_info;
 
-		if (load_apm_power_info(&apm_info)) {
-			return bprintf("%d", apm_info.battery_life);
+		if (load_apm_power_info(&apm_info) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		return bprintf("%d", apm_info.battery_life);
 	}
 
 	const char *
@@ -167,15 +169,15 @@
 		size_t i;
 
 		if (load_apm_power_info(&apm_info)) {
-			for (i = 0; i < LEN(map); i++) {
-				if (map[i].state == apm_info.ac_state) {
-					break;
-				}
-			}
-			return (i == LEN(map)) ? "?" : map[i].symbol;
+			return NULL;
 		}
 
-		return NULL;
+		for (i = 0; i < LEN(map); i++) {
+			if (map[i].state == apm_info.ac_state) {
+				break;
+			}
+		}
+		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
 
 	const char *
@@ -183,17 +185,17 @@
 	{
 		struct apm_power_info apm_info;
 
-		if (load_apm_power_info(&apm_info)) {
-			if (apm_info.ac_state != APM_AC_ON) {
-				return bprintf("%uh %02um",
-			                       apm_info.minutes_left / 60,
-				               apm_info.minutes_left % 60);
-			} else {
-				return "";
-			}
+		if (load_apm_power_info(&apm_info) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		if (apm_info.ac_state != APM_AC_ON) {
+			return bprintf("%uh %02um",
+			               apm_info.minutes_left / 60,
+			               apm_info.minutes_left % 60);
+		} else {
+			return "";
+		}
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/sysctl.h>
@@ -205,7 +207,7 @@
 		size_t len;
 
 		len = sizeof(cap);
-		if (sysctlbyname("hw.acpi.battery.life", &cap, &len, NULL, 0) == -1
+		if (sysctlbyname("hw.acpi.battery.life", &cap, &len, NULL, 0) < 0
 				|| !len)
 			return NULL;
 
@@ -219,7 +221,7 @@
 		size_t len;
 
 		len = sizeof(state);
-		if (sysctlbyname("hw.acpi.battery.state", &state, &len, NULL, 0) == -1
+		if (sysctlbyname("hw.acpi.battery.state", &state, &len, NULL, 0) < 0
 				|| !len)
 			return NULL;
 
@@ -241,7 +243,7 @@
 		size_t len;
 
 		len = sizeof(rem);
-		if (sysctlbyname("hw.acpi.battery.time", &rem, &len, NULL, 0) == -1
+		if (sysctlbyname("hw.acpi.battery.time", &rem, &len, NULL, 0) < 0
 				|| !len
 				|| rem == -1)
 			return NULL;
