@@ -1,14 +1,18 @@
 /* See LICENSE file for copyright and license details. */
+#include "../meter.h"
 #include "../util.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define METER_WIDTH 10
+static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
+
 static uintmax_t free_bytes, total_bytes, used_bytes;
 
 #if defined(__linux__)
-
 /*
  * https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s2-proc-meminfo
  * While the file shows kilobytes (kB; 1 kB equals 1000 B), it is actually
@@ -141,6 +145,20 @@ swap_free(void)
 	}
 
 	return fmt_human_3(free_bytes, 1024);
+}
+
+const char *
+swap_meter(void)
+{
+	wchar_t meter[METER_WIDTH + 1] = {'\0'};
+
+	if (update_swap_info() < 0 || total_bytes == 0) {
+		return NULL;
+	}
+
+	left_blocks_meter((double)used_bytes / total_bytes, meter, METER_WIDTH);
+
+	return bprintf("%ls", meter);
 }
 
 const char *
