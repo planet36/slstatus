@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+static uintmax_t free_bytes, total_bytes, used_bytes;
+
 #if defined(__linux__)
 
 /*
@@ -13,13 +15,13 @@
  * /proc/meminfo to specify size with the "kB" string.
  */
 
-	static uintmax_t memtotal, memfree, memavailable, buffers, cached,
-	                 sreclaimable;
-
 	static int
 	update_mem_info(void)
 	{
-		return pscanf("/proc/meminfo",
+		uintmax_t memtotal, memfree, memavailable, buffers, cached,
+		          sreclaimable;
+
+		if (pscanf("/proc/meminfo",
 		              "MemTotal: %ju kB\n"
 		              "MemFree: %ju kB\n"
 		              "MemAvailable: %ju kB\n"
@@ -45,53 +47,15 @@
 		              "Slab: %*s kB\n" // discard
 		              "SReclaimable: %ju kB\n",
 		              &memtotal, &memfree, &memavailable, &buffers, &cached,
-		              &sreclaimable) != 6;
-	}
-
-	const char *
-	ram_free(void)
-	{
-		if (update_mem_info()) {
-			return NULL;
+		              &sreclaimable) != 6) {
+			return -1;
 		}
 
-		return fmt_human_3(memavailable * 1024, 1024);
-	}
+		free_bytes = memavailable * 1024;
+		total_bytes = memtotal * 1024;
+		used_bytes = (memtotal - memfree - (buffers + cached + sreclaimable)) * 1024;
 
-	const char *
-	ram_perc(void)
-	{
-		uintmax_t used;
-
-		if (update_mem_info() || memtotal == 0) {
-			return NULL;
-		}
-
-		used = memtotal - memfree - (buffers + cached + sreclaimable);
-		return bprintf("%.0f", 100.0 * used / memtotal);
-	}
-
-	const char *
-	ram_total(void)
-	{
-		if (update_mem_info()) {
-			return NULL;
-		}
-
-		return fmt_human_3(memtotal * 1024, 1024);
-	}
-
-	const char *
-	ram_used(void)
-	{
-		uintmax_t used;
-
-		if (update_mem_info()) {
-			return NULL;
-		}
-
-		used = memtotal - memfree - (buffers + cached + sreclaimable);
-		return fmt_human_3(used * 1024, 1024);
+		return 0;
 	}
 #elif defined(__OpenBSD__)
 	#include <stdlib.h>
@@ -103,69 +67,23 @@
 	#define pagetok(size, pageshift) (size_t)((size) << ((pageshift) - LOG1024))
 
 	static int
-	load_uvmexp(struct uvmexp *uvmexp)
+	update_mem_info(void)
 	{
+		struct uvmexp uvmexp;
 		int uvmexp_mib[2] = {CTL_VM, VM_UVMEXP};
 		size_t size;
 
-		size = sizeof(*uvmexp);
+		size = sizeof(uvmexp);
 
-		return sysctl(uvmexp_mib, LEN(uvmexp_mib), uvmexp, &size, NULL, 0);
-	}
-
-	const char *
-	ram_free(void)
-	{
-		struct uvmexp uvmexp;
-		int free_pages;
-
-		if (load_uvmexp(&uvmexp) < 0) {
+		if (sysctl(uvmexp_mib, LEN(uvmexp_mib), &uvmexp, &size, NULL, 0) < 0) {
 			return NULL;
 		}
 
-		free_pages = uvmexp.npages - uvmexp.active;
-		return fmt_human(pagetok(free_pages, uvmexp.pageshift) *
-		                 1024, 1024);
-	}
+		total_bytes = pagetok(uvmexp.npages, uvmexp.pageshift) * 1024;
+		used_bytes = pagetok(uvmexp.active, uvmexp.pageshift) * 1024;
+		free_bytes = total_bytes - used_bytes;
 
-	const char *
-	ram_perc(void)
-	{
-		struct uvmexp uvmexp;
-
-		if (load_uvmexp(&uvmexp) < 0) {
-			return NULL;
-		}
-
-		return bprintf("%.0f", 100.0 * uvmexp.active / uvmexp.npages);
-	}
-
-	const char *
-	ram_total(void)
-	{
-		struct uvmexp uvmexp;
-
-		if (load_uvmexp(&uvmexp) < 0) {
-			return NULL;
-		}
-
-		return fmt_human(pagetok(uvmexp.npages,
-		                         uvmexp.pageshift) * 1024,
-		                 1024);
-	}
-
-	const char *
-	ram_used(void)
-	{
-		struct uvmexp uvmexp;
-
-		if (load_uvmexp(&uvmexp) < 0) {
-			return NULL;
-		}
-
-		return fmt_human(pagetok(uvmexp.active,
-		                         uvmexp.pageshift) * 1024,
-		                 1024);
+		return 0;
 	}
 #elif defined(__FreeBSD__)
 	#include <sys/sysctl.h>
@@ -173,64 +91,71 @@
 	#include <unistd.h>
 	#include <vm/vm_param.h>
 
-	const char *
-	ram_free(void)
+	static int
+	update_mem_info(void)
 	{
-		struct vmtotal vm_stats;
-		int mib[2] = {CTL_VM, VM_TOTAL};
+		unsigned int free_pages, total_pages, active_pages;
 		size_t len;
 
-		len = sizeof(vm_stats);
-		if (sysctl(mib, LEN(mib), &vm_stats, &len, NULL, 0) < 0 || !len)
-			return NULL;
+		len = sizeof(free_pages);
+		if (sysctlbyname("vm.stats.vm.v_free_count",
+		                 &free_pages, &len, NULL, 0) < 0 || !len)
+			return -1;
 
-		return fmt_human(vm_stats.t_free * getpagesize(), 1024);
-	}
-
-	const char *
-	ram_total(void)
-	{
-		unsigned int npages;
-		size_t len;
-
-		len = sizeof(npages);
+		len = sizeof(total_pages);
 		if (sysctlbyname("vm.stats.vm.v_page_count",
-		                 &npages, &len, NULL, 0) < 0 || !len)
-			return NULL;
+		                 &total_pages, &len, NULL, 0) < 0 || !len)
+			return -1;
 
-		return fmt_human(npages * getpagesize(), 1024);
-	}
-
-	const char *
-	ram_perc(void)
-	{
-		unsigned int npages;
-		unsigned int active;
-		size_t len;
-
-		len = sizeof(npages);
-		if (sysctlbyname("vm.stats.vm.v_page_count",
-		                 &npages, &len, NULL, 0) < 0 || !len)
-			return NULL;
-
+		len = sizeof(active_pages);
 		if (sysctlbyname("vm.stats.vm.v_active_count",
-		                 &active, &len, NULL, 0) < 0 || !len)
-			return NULL;
+		                 &active_pages, &len, NULL, 0) < 0 || !len)
+			return -1;
 
-		return bprintf("%.0f", 100.0 * active / npages);
-	}
+		free_bytes = free_pages* getpagesize();
+		total_bytes = total_pages * getpagesize();
+		used_bytes = active_pages * getpagesize();
 
-	const char *
-	ram_used(void)
-	{
-		unsigned int active;
-		size_t len;
-
-		len = sizeof(active);
-		if (sysctlbyname("vm.stats.vm.v_active_count",
-		                 &active, &len, NULL, 0) < 0 || !len)
-			return NULL;
-
-		return fmt_human(active * getpagesize(), 1024);
+		return 0;
 	}
 #endif
+
+const char *
+ram_free(void)
+{
+	if (update_mem_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(free_bytes, 1024);
+}
+
+const char *
+ram_perc(void)
+{
+	if (update_mem_info() < 0 || total_bytes == 0) {
+		return NULL;
+	}
+
+	return bprintf("%.0f", 100.0 * used_bytes / total_bytes);
+}
+
+const char *
+ram_total(void)
+{
+	if (update_mem_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(total_bytes, 1024);
+}
+
+const char *
+ram_used(void)
+{
+	if (update_mem_info() < 0) {
+		return NULL;
+	}
+
+	return fmt_human_3(used_bytes, 1024);
+}
