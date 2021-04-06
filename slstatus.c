@@ -13,7 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 
-struct arg {
+struct component {
 	const char *(*func)();
 	const char *fmt;
 	const char *args;
@@ -133,12 +133,12 @@ main(int argc, char *argv[])
 		prev_time = now_time;
 
 		status[0] = '\0';
-		for (i = len = 0; i < LEN(args); i++) {
-			if (!(res = args[i].func(args[i].args))) {
+		for (i = len = 0; i < LEN(components); i++) {
+			if (!(res = components[i].func(components[i].args))) {
 				res = unknown_str;
 			}
 			if ((ret = esnprintf(status + len, sizeof(status) - len,
-			                    args[i].fmt, res)) < 0) {
+			                    components[i].fmt, res)) < 0) {
 				break;
 			}
 			len += ret;

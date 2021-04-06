@@ -70,7 +70,7 @@ static const char unknown_str[] = "n/a";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
-static const struct arg args[] = {
+static const struct component components[] = {
 	/* function format          argument */
 
 	{ cpu_perc    , "%3s%%"    , NULL          } ,
