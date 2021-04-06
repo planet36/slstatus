@@ -36,8 +36,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 		/* cpu user nice system idle iowait irq softirq */
 		if (pscanf("/proc/stat", "%*s %ju %ju %ju %ju %*s %ju %ju",
-		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5])
-		    != 6) {
+		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5]) != 6) {
 			return -1;
 		}
 
