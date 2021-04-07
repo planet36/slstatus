@@ -5,6 +5,9 @@
 #include <assert.h>
 #include <stdio.h>
 
+#define HIST_WIDTH 10
+static_assert(HIST_WIDTH > 0, "HIST_WIDTH must be > 0");
+
 #define METER_WIDTH 10
 static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
@@ -136,6 +139,31 @@ ram_free(void)
 	}
 
 	return fmt_human_3(free_bytes, 1024);
+}
+
+const char *
+ram_hist(void)
+{
+	static int initialized;
+	size_t i;
+	static wchar_t hist[HIST_WIDTH + 1];
+
+	if (!initialized) {
+		wmemset(hist, ' ', HIST_WIDTH);
+		hist[HIST_WIDTH] = '\0';
+		initialized = 1;
+	}
+
+	if (update_mem_info() < 0 || total_bytes == 0) {
+		return NULL;
+	}
+
+	for (i = 0; i < HIST_WIDTH - 1; ++i) {
+		hist[i] = hist[i+1];
+	}
+	hist[i] = lower_blocks_1((double)used_bytes / total_bytes);
+
+	return bprintf("%ls", hist);
 }
 
 const char *

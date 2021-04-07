@@ -61,6 +61,7 @@ const char *num_files(const char *path);
 
 /* ram */
 const char *ram_free(void);
+const char *ram_hist(void);
 const char *ram_meter(void);
 const char *ram_perc(void);
 const char *ram_total(void);
@@ -74,6 +75,7 @@ const char *separator(const char *separator);
 
 /* swap */
 const char *swap_free(void);
+const char *swap_hist(void);
 const char *swap_meter(void);
 const char *swap_perc(void);
 const char *swap_total(void);

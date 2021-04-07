@@ -50,6 +50,7 @@ static const char unknown_str[] = "n/a";
  * num_files           number of files in a directory  path
  *                                                     (/home/foo/Inbox/cur)
  * ram_free            free memory in GB               NULL
+ * ram_hist            memory usage history            NULL
  * ram_meter           memory usage meter              NULL
  * ram_perc            memory usage in percent         NULL
  * ram_total           total memory size in GB         NULL
@@ -57,6 +58,7 @@ static const char unknown_str[] = "n/a";
  * run_command         custom shell command            command (echo foo)
  * separator           string to echo                  NULL
  * swap_free           free swap in GB                 NULL
+ * swap_hist           swap usage history              NULL
  * swap_meter          swap usage meter                NULL
  * swap_perc           swap usage in percent           NULL
  * swap_total          total swap size in GB           NULL
