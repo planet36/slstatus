@@ -37,13 +37,16 @@ install: $(BIN)
 	cp -f $(BIN) "$(DESTDIR)$(PREFIX)/bin"
 	chmod 755 "$(DESTDIR)$(PREFIX)/bin/$(BIN)"
 	mkdir -p "$(DESTDIR)$(MANPREFIX)/man1"
-	sed "s/VERSION/$(VERSION)/g" < $(BIN).1 > $(DESTDIR)$(MANPREFIX)/man1/$(BIN).1
+	sed "s/VERSION/$(VERSION)/g" < $(BIN).1 > "$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
 	chmod 644 "$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
 
 uninstall:
-	$(RM) "$(DESTDIR)$(PREFIX)/bin/$(BIN)" \
+	@$(RM) "$(DESTDIR)$(PREFIX)/bin/$(BIN)" \
 		"$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
 
-.PHONY: options clean dist install uninstall
+lint:
+	clang-tidy $(SRCS) -- $(CFLAGS) $(LDFLAGS)
+
+.PHONY: options clean dist install uninstall lint
 
 -include $(DEPS)
