@@ -45,7 +45,7 @@ uninstall:
 		"$(DESTDIR)$(MANPREFIX)/man1/$(BIN).1"
 
 lint:
-	clang-tidy $(SRCS) -- $(CFLAGS) $(LDFLAGS)
+	clang-tidy --quiet $(SRCS) -- $(CFLAGS) $(LDFLAGS)
 
 .PHONY: options clean dist install uninstall lint
 
