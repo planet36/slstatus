@@ -10,6 +10,9 @@ static const char unknown_str[] = "n/a";
 /* maximum output string length */
 #define MAXLEN 2048
 
+/* all percentages will be clamped to 99 */
+#define MAX_PCT_99
+
 /*
  * function            description                     argument (example)
  *
@@ -79,7 +82,7 @@ static const char unknown_str[] = "n/a";
 static const struct component components[] = {
 	/* function format          argument */
 
-	{ cpu_perc    , "%3s%%"    , NULL          } ,
+	{ cpu_perc    , "%2s%%"    , NULL          } ,
 	{ separator   , " ┆ "      , NULL          } ,
 	{ ram_used    , "%7sB"     , NULL          } ,
 	{ separator   , " ┆ "      , NULL          } ,

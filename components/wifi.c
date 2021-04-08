@@ -26,6 +26,7 @@
 		char path[PATH_MAX];
 		char status[5];
 		FILE *fp;
+		double pct;
 
 		if (esnprintf(path, sizeof(path), "/sys/class/net/%s/operstate",
 		              interface) < 0) {
@@ -64,7 +65,14 @@
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
 		/* 70 is the max of /proc/net/wireless */
-		return bprintf("%.0f", 100.0 * cur / 70);
+		pct = 100.0 * cur / 70;
+
+#ifdef MAX_PCT_99
+		if (pct > 99.0)
+			pct = 99.0;
+#endif
+
+		return bprintf("%.0f", pct);
 	}
 
 	const char *
@@ -120,48 +128,54 @@
 		memset(nr, 0, sizeof(struct ieee80211_nodereq));
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");
-			return 0;
+			return -1;
 		}
 		strlcpy(bssid.i_name, interface, sizeof(bssid.i_name));
 		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
 			warn("ioctl 'SIOCG80211BSSID':");
 			close(sockfd);
-			return 0;
+			return -1;
 		}
 		memset(&zero_bssid, 0, sizeof(zero_bssid));
 		if (memcmp(bssid.i_bssid, zero_bssid,
 		    IEEE80211_ADDR_LEN) == 0) {
 			close(sockfd);
-			return 0;
+			return -1;
 		}
 		strlcpy(nr->nr_ifname, interface, sizeof(nr->nr_ifname));
 		memcpy(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
 		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
 			warn("ioctl 'SIOCG80211NODE':");
 			close(sockfd);
-			return 0;
+			return -1;
 		}
 
 		close(sockfd);
-		return 1;
+		return 0;
 	}
 
 	const char *
 	wifi_perc(const char *interface)
 	{
 		struct ieee80211_nodereq nr;
-		int q;
+		int pct;
 
-		if (load_ieee80211_nodereq(interface, &nr)) {
-			if (nr.nr_max_rssi) {
-				q = IEEE80211_NODEREQ_RSSI(&nr);
-			} else {
-				q = RSSI_TO_PERC(nr.nr_rssi);
-			}
-			return bprintf("%d", q);
+		if (load_ieee80211_nodereq(interface, &nr) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		if (nr.nr_max_rssi) {
+			pct = IEEE80211_NODEREQ_RSSI(&nr);
+		} else {
+			pct = RSSI_TO_PERC(nr.nr_rssi);
+		}
+
+#ifdef MAX_PCT_99
+		if (pct > 99)
+			pct = 99;
+#endif
+
+		return bprintf("%d", pct);
 	}
 
 	const char *
@@ -169,11 +183,11 @@
 	{
 		struct ieee80211_nodereq nr;
 
-		if (load_ieee80211_nodereq(interface, &nr)) {
-			return bprintf("%s", nr.nr_nwid);
+		if (load_ieee80211_nodereq(interface, &nr) < 0) {
+			return NULL;
 		}
 
-		return NULL;
+		return bprintf("%s", nr.nr_nwid);
 	}
 #elif defined(__FreeBSD__)
 	#include <net/if.h>
@@ -194,11 +208,11 @@
 			snprintf(warn_buf,  sizeof(warn_buf),
 			         "ioctl: 'SIOCG80211': %d", type);
 			warn(warn_buf);
-			return 0;
+			return -1;
 		}
 
 		*len = ireq.i_len;
-		return 1;
+		return 0;
 	}
 
 	const char *
@@ -212,7 +226,7 @@
 		int rssi_dbm;
 		int sockfd;
 		size_t len;
-		const char *fmt;
+		int pct;
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");
@@ -221,24 +235,34 @@
 
 		/* Retreive MAC address of interface */
 		len = IEEE80211_ADDR_LEN;
-		fmt = NULL;
-		if (load_ieee80211req(sockfd, interface, &bssid, IEEE80211_IOC_BSSID, &len))
+		if (load_ieee80211req(sockfd, interface, &bssid, IEEE80211_IOC_BSSID, &len) < 0)
 		{
-			/* Retrieve info on station with above BSSID */
-			memset(&info, 0, sizeof(info));
-			memcpy(info.sta.is_u.macaddr, bssid, sizeof(bssid));
-
-			len = sizeof(info);
-			if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len)) {
-				rssi_dbm = info.sta.info[0].isi_noise +
-				           info.sta.info[0].isi_rssi / 2;
-
-				fmt = bprintf("%d", RSSI_TO_PERC(rssi_dbm));
-			}
+			close(sockfd);
+			return NULL;
 		}
 
+		/* Retrieve info on station with above BSSID */
+		memset(&info, 0, sizeof(info));
+		memcpy(info.sta.is_u.macaddr, bssid, sizeof(bssid));
+
+		len = sizeof(info);
+		if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len) < 0) {
+			close(sockfd);
+			return NULL;
+		}
+
+		rssi_dbm = info.sta.info[0].isi_noise +
+		           info.sta.info[0].isi_rssi / 2;
+
+		pct = RSSI_TO_PERC(rssi_dbm)
+
+#ifdef MAX_PCT_99
+		if (pct > 99)
+			pct = 99;
+#endif
+
 		close(sockfd);
-		return fmt;
+		return bprintf("%d", pct);
 	}
 
 	const char *
@@ -247,27 +271,27 @@
 		char ssid[IEEE80211_NWID_LEN + 1];
 		size_t len;
 		int sockfd;
-		const char *fmt;
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET':");
 			return NULL;
 		}
 
-		fmt = NULL;
 		len = sizeof(ssid);
 		memset(&ssid, 0, len);
-		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len)) {
-			if (len < sizeof(ssid))
-				len += 1;
-			else
-				len = sizeof(ssid);
-
-			ssid[len - 1] = '\0';
-			fmt = bprintf("%s", ssid);
+		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len) < 0) {
+			close(sockfd);
+			return NULL;
 		}
 
+		if (len < sizeof(ssid))
+			len += 1;
+		else
+			len = sizeof(ssid);
+
+		ssid[len - 1] = '\0';
+
 		close(sockfd);
-		return fmt;
+		return bprintf("%s", ssid);
 	}
 #endif

@@ -153,6 +153,7 @@ swap_free(void)
 const char *
 swap_hist(void)
 {
+	double used;
 	static int initialized;
 	size_t i;
 	static wchar_t hist[HIST_WIDTH + 1];
@@ -167,10 +168,12 @@ swap_hist(void)
 		return NULL;
 	}
 
+	used = (double)used_bytes / total_bytes;
+
 	for (i = 0; i < HIST_WIDTH - 1; ++i) {
 		hist[i] = hist[i+1];
 	}
-	hist[i] = lower_blocks_1((double)used_bytes / total_bytes);
+	hist[i] = lower_blocks_1(used);
 
 	return bprintf("%ls", hist);
 }
@@ -178,13 +181,16 @@ swap_hist(void)
 const char *
 swap_meter(void)
 {
+	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
 	if (update_swap_info() < 0 || total_bytes == 0) {
 		return NULL;
 	}
 
-	left_blocks_meter((double)used_bytes / total_bytes, meter, METER_WIDTH);
+	used = (double)used_bytes / total_bytes;
+
+	left_blocks_meter(used, meter, METER_WIDTH);
 
 	return bprintf("%ls", meter);
 }
@@ -192,11 +198,20 @@ swap_meter(void)
 const char *
 swap_perc(void)
 {
+	double used;
+
 	if (update_swap_info() < 0 || total_bytes == 0) {
 		return NULL;
 	}
 
-	return bprintf("%.0f", 100.0 * used_bytes / total_bytes);
+	used = (double)used_bytes / total_bytes;
+
+#ifdef MAX_PCT_99
+		if (used > 0.99)
+			used = 0.99;
+#endif
+
+	return bprintf("%.0f", 100 * used);
 }
 
 const char *

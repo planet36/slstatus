@@ -60,6 +60,11 @@ disk_perc(const char *path)
 
 	used = 1 - (double)fs.f_bavail / fs.f_blocks;
 
+#ifdef MAX_PCT_99
+		if (used > 0.99)
+			used = 0.99;
+#endif
+
 	return bprintf("%.0f", 100 * used);
 }
 

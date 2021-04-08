@@ -178,6 +178,11 @@
 			}
 		}
 
+#ifdef MAX_PCT_99
+		if (value > 99)
+			value = 99;
+#endif
+
 		return bprintf("%d", value);
 	}
 #else
@@ -211,7 +216,13 @@
 		}
 
 		close(afd);
+		v &= 0xFF;
 
-		return bprintf("%d", v & 0xff);
+#ifdef MAX_PCT_99
+		if (v > 99)
+			v = 99;
+#endif
+
+		return bprintf("%d", v);
 	}
 #endif

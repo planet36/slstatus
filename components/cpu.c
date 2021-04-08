@@ -232,5 +232,10 @@ cpu_perc(void)
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
+#ifdef MAX_PCT_99
+		if (used > 0.99)
+			used = 0.99;
+#endif
+
 	return bprintf("%.0f", 100 * used);
 }

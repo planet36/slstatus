@@ -67,6 +67,11 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 			return NULL;
 		}
 
+#ifdef MAX_PCT_99
+		if (cap_perc > 99)
+			cap_perc = 99;
+#endif
+
 		return bprintf("%d", cap_perc);
 	}
 
@@ -189,13 +194,21 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 	const char *
 	battery_perc(const char *unused)
 	{
+		int cap_perc;
 		struct apm_power_info apm_info;
 
 		if (load_apm_power_info(&apm_info) < 0) {
 			return NULL;
 		}
 
-		return bprintf("%d", apm_info.battery_life);
+		cap_perc = apm_info.battery_life;
+
+#ifdef MAX_PCT_99
+		if (cap_perc > 99)
+			cap_perc = 99;
+#endif
+
+		return bprintf("%d", cap_perc);
 	}
 
 	const char *
@@ -270,6 +283,11 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		if (sysctlbyname("hw.acpi.battery.life", &cap_perc, &len, NULL, 0) < 0
 				|| !len)
 			return NULL;
+
+#ifdef MAX_PCT_99
+		if (cap_perc > 99)
+			cap_perc = 99;
+#endif
 
 		return bprintf("%d", cap_perc);
 	}
