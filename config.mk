@@ -13,7 +13,7 @@ INCS = `pkg-config --cflags x11`
 LIBS = `pkg-config --libs   x11` -lm
 
 # flags
-CPPFLAGS += -DVERSION=\"$(VERSION)\"
+CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE
 DEPFLAGS += -MMD -MP
 CFLAGS += -Os \
 		-Wno-format-nonliteral
