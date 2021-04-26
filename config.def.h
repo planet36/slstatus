@@ -16,7 +16,7 @@ static const char unknown_str[] = "n/a";
 /*
  * function            description                     argument (example)
  *
- * battery_meter       battery meter                   battery name (BAT0)
+ * battery_meter       battery meter, unicode          battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
  * battery_perc        battery percentage              battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
@@ -28,12 +28,12 @@ static const char unknown_str[] = "n/a";
  * clocktime           high-resolution clock           NULL
  * counter             integer counter of samples      NULL
  * cpu_freq            cpu frequency in MHz            NULL
- * cpu_hist            cpu usage history               NULL
- * cpu_meter           cpu usage meter                 NULL
+ * cpu_hist            cpu usage history, unicode      NULL
+ * cpu_meter           cpu usage meter, unicode        NULL
  * cpu_perc            cpu usage in percent            NULL
  * datetime            date and time                   format string (%F %T)
  * disk_free           free disk space in GB           mountpoint path (/)
- * disk_meter          disk usage meter                mountpoint path (/)
+ * disk_meter          disk usage meter, unicode       mountpoint path (/)
  * disk_perc           disk usage in percent           mountpoint path (/)
  * disk_total          total disk space in GB          mountpoint path (/)
  * disk_used           used disk space in GB           mountpoint path (/)
@@ -53,16 +53,16 @@ static const char unknown_str[] = "n/a";
  * num_files           number of files in a directory  path
  *                                                     (/home/foo/Inbox/cur)
  * ram_free            free memory in GB               NULL
- * ram_hist            memory usage history            NULL
- * ram_meter           memory usage meter              NULL
+ * ram_hist            memory usage history, unicode   NULL
+ * ram_meter           memory usage meter, unicode     NULL
  * ram_perc            memory usage in percent         NULL
  * ram_total           total memory size in GB         NULL
  * ram_used            used memory in GB               NULL
  * run_command         custom shell command            command (echo foo)
  * separator           string to echo                  NULL
  * swap_free           free swap in GB                 NULL
- * swap_hist           swap usage history              NULL
- * swap_meter          swap usage meter                NULL
+ * swap_hist           swap usage history, unicode     NULL
+ * swap_meter          swap usage meter, unicode       NULL
  * swap_perc           swap usage in percent           NULL
  * swap_total          total swap size in GB           NULL
  * swap_used           used swap in GB                 NULL
