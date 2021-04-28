@@ -179,3 +179,12 @@ timespec_to_double(const struct timespec *ts)
 {
 	return ts->tv_sec + copysign(ts->tv_nsec, ts->tv_sec) / 1E9;
 }
+
+struct timeval
+milliseconds_to_timeval(unsigned int milliseconds)
+{
+	return (struct timeval){
+		.tv_sec = milliseconds / 1000U,
+		.tv_usec = (milliseconds % 1000U) * 1000U,
+	};
+}

@@ -53,9 +53,7 @@ main(int argc, char *argv[])
 	const char *optstring = "+h1sv";
 	struct sigaction act;
 	sigset_t newmask, oldmask, waitmask;
-	const struct timeval interval_tv = {
-	             .tv_sec = interval / 1000U,
-	             .tv_usec = (interval % 1000U) * 1000U};
+	const struct timeval interval_tv = milliseconds_to_timeval(interval);
 	const struct itimerval itv = {
 	             .it_interval = interval_tv,
 	             .it_value = interval_tv}; // If zero, the alarm is disabled.

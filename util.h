@@ -19,3 +19,4 @@ const char *fmt_human_3(uintmax_t num, int base);
 int pscanf(const char *path, const char *fmt, ...);
 
 double timespec_to_double(const struct timespec *ts);
+struct timeval milliseconds_to_timeval(unsigned int milliseconds);
