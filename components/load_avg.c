@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +11,7 @@ load_avg(void)
 	double avgs[3];
 
 	if (getloadavg(avgs, 3) < 0) {
-		warn("getloadavg: Failed to obtain load average");
+		warnx("getloadavg: Failed to obtain load average");
 		return NULL;
 	}
 

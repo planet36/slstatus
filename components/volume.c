@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -64,7 +65,7 @@
 
 		c = malloc(sizeof(struct control));
 		if (c == NULL) {
-			warn("sndio: failed to allocate audio control\n");
+			warnx("sndio: failed to allocate audio control");
 			return;
 		}
 
@@ -115,23 +116,23 @@
 	{
 		hdl = sioctl_open(SIO_DEVANY, SIOCTL_READ, 0);
 		if (hdl == NULL) {
-			warn("sndio: cannot open device");
+			warnx("sndio: cannot open device");
 			goto failed;
 		}
 
 		if (!sioctl_ondesc(hdl, ondesc, NULL)) {
-			warn("sndio: cannot set control description call-back");
+			warnx("sndio: cannot set control description call-back");
 			goto failed;
 		}
 
 		if (!sioctl_onval(hdl, onval, NULL)) {
-			warn("sndio: cannot set control values call-back");
+			warnx("sndio: cannot set control values call-back");
 			goto failed;
 		}
 
 		pfds = calloc(sioctl_nfds(hdl), sizeof(struct pollfd));
 		if (pfds == NULL) {
-			warn("sndio: cannot allocate pollfd structures");
+			warnx("sndio: cannot allocate pollfd structures");
 			goto failed;
 		}
 
@@ -159,7 +160,7 @@
 			n = poll(pfds, n, 0);
 			if (n > 0) {
 				if (sioctl_revents(hdl, pfds) & POLLHUP) {
-					warn("sndio: disconnected");
+					warnx("sndio: disconnected");
 					cleanup();
 					return NULL;
 				}
@@ -196,19 +197,19 @@
 		char *vnames[] = SOUND_DEVICE_NAMES;
 
 		if ((afd = open(card, O_RDONLY | O_NONBLOCK)) < 0) {
-			warn("open '%s':", card);
+			warn("open '%s'", card);
 			return NULL;
 		}
 
 		if (ioctl(afd, (int)SOUND_MIXER_READ_DEVMASK, &devmask) < 0) {
-			warn("ioctl 'SOUND_MIXER_READ_DEVMASK':");
+			warn("ioctl 'SOUND_MIXER_READ_DEVMASK'");
 			close(afd);
 			return NULL;
 		}
 		for (i = 0; i < LEN(vnames); i++) {
 			if (devmask & (1 << i) && !strcmp("vol", vnames[i])) {
 				if (ioctl(afd, MIXER_READ(i), &v) < 0) {
-					warn("ioctl 'MIXER_READ(%ld)':", i);
+					warn("ioctl 'MIXER_READ(%ld)'", i);
 					close(afd);
 					return NULL;
 				}

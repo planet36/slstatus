@@ -41,6 +41,7 @@ extern double delta_time; // seconds
 		return 0;
 	}
 #elif defined(__OpenBSD__) | defined(__FreeBSD__)
+	#include <err.h>
 	#include <string.h>
 	#include <ifaddrs.h>
 	#include <sys/types.h>
@@ -55,7 +56,7 @@ extern double delta_time; // seconds
 		int if_ok = 0;
 
 		if (getifaddrs(&ifal) == -1) {
-			warn("getifaddrs failed");
+			warnx("getifaddrs failed");
 			return -1;
 		}
 		*rxbytes = 0;
@@ -67,7 +68,7 @@ extern double delta_time; // seconds
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
-			warn("reading 'if_data' failed");
+			warnx("reading 'if_data' failed");
 			return -1;
 		}
 
@@ -82,7 +83,7 @@ extern double delta_time; // seconds
 		int if_ok = 0;
 
 		if (getifaddrs(&ifal) == -1) {
-			warn("getifaddrs failed");
+			warnx("getifaddrs failed");
 			return -1;
 		}
 		*txbytes = 0;
@@ -94,7 +95,7 @@ extern double delta_time; // seconds
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
-			warn("reading 'if_data' failed");
+			warnx("reading 'if_data' failed");
 			return -1;
 		}
 

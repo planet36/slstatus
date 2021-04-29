@@ -9,7 +9,6 @@ extern char buf[1024];
 
 #define LEN(x) (sizeof(x) / sizeof((x)[0]))
 
-void warn(const char *, ...);
 void die(const char *, ...) __attribute__ ((noreturn));
 
 int esnprintf(char *str, size_t size, const char *fmt, ...);

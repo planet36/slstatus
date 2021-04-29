@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 
 #if defined(CLOCK_BOOTTIME)
@@ -14,13 +15,11 @@
 const char *
 uptime(void)
 {
-	char warn_buf[256];
 	uintmax_t h, m;
 	struct timespec uptime;
 
 	if (clock_gettime(UPTIME_FLAG, &uptime) < 0) {
-		snprintf(warn_buf, sizeof(warn_buf), "clock_gettime %d", UPTIME_FLAG);
-		warn(warn_buf);
+		warn("clock_gettime %d", UPTIME_FLAG);
 		return NULL;
 	}
 

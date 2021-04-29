@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 #include <ctype.h>
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -23,7 +24,7 @@ keyboard_indicators(const char *fmt)
 	char key;
 
 	if (!(dpy = XOpenDisplay(NULL))) {
-		warn("XOpenDisplay: Failed to open display");
+		warnx("XOpenDisplay: Failed to open display");
 		return NULL;
 	}
 	XGetKeyboardControl(dpy, &state);

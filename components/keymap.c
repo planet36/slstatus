@@ -4,6 +4,7 @@
 #include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 #include <ctype.h>
+#include <err.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,23 +58,23 @@ keymap(void)
 	layout = NULL;
 
 	if (!(dpy = XOpenDisplay(NULL))) {
-		warn("XOpenDisplay: Failed to open display");
+		warnx("XOpenDisplay: Failed to open display");
 		return NULL;
 	}
 	if (!(desc = XkbAllocKeyboard())) {
-		warn("XkbAllocKeyboard: Failed to allocate keyboard");
+		warnx("XkbAllocKeyboard: Failed to allocate keyboard");
 		goto end;
 	}
 	if (XkbGetNames(dpy, XkbSymbolsNameMask, desc)) {
-		warn("XkbGetNames: Failed to retrieve key symbols");
+		warnx("XkbGetNames: Failed to retrieve key symbols");
 		goto end;
 	}
 	if (XkbGetState(dpy, XkbUseCoreKbd, &state)) {
-		warn("XkbGetState: Failed to retrieve keyboard state");
+		warnx("XkbGetState: Failed to retrieve keyboard state");
 		goto end;
 	}
 	if (!(symbols = XGetAtomName(dpy, desc->names->symbols))) {
-		warn("XGetAtomName: Failed to get atom name");
+		warnx("XGetAtomName: Failed to get atom name");
 		goto end;
 	}
 	layout = bprintf("%s", get_layout(symbols, state.group));
@@ -81,7 +82,7 @@ keymap(void)
 end:
 	XkbFreeKeyboard(desc, XkbSymbolsNameMask, 1);
 	if (XCloseDisplay(dpy)) {
-		warn("XCloseDisplay: Failed to close display");
+		warnx("XCloseDisplay: Failed to close display");
 	}
 
 	return layout;

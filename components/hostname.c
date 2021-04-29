@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -8,7 +9,7 @@ const char *
 hostname(void)
 {
 	if (gethostname(buf, sizeof(buf)) < 0) {
-		warn("gethostbyname:");
+		warn("gethostbyname");
 		return NULL;
 	}
 

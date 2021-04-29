@@ -46,6 +46,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		return 0;
 	}
 #elif defined(__OpenBSD__)
+	#include <err.h>
 	#include <sys/param.h>
 	#include <sys/sched.h>
 	#include <sys/sysctl.h>
@@ -63,7 +64,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 		/* in MHz */
 		if (sysctl(mib, LEN(mib), &tmp_freq, &size, NULL, 0) < 0) {
-			warn("sysctl 'HW_CPUSPEED':");
+			warn("sysctl 'HW_CPUSPEED'");
 			return -1;
 		}
 
@@ -85,7 +86,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size = sizeof(a);
 
 		if (sysctl(mib, LEN(mib), &a, &size, NULL, 0) < 0) {
-			warn("sysctl 'KERN_CPTIME':");
+			warn("sysctl 'KERN_CPTIME'");
 			return -1;
 		}
 
@@ -95,6 +96,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		return 0;
 	}
 #elif defined(__FreeBSD__)
+	#include <err.h>
 	#include <sys/param.h>
 	#include <sys/sysctl.h>
 	#include <devstat.h>
@@ -110,7 +112,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		/* in MHz */
 		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) < 0
 				|| !size) {
-			warn("sysctlbyname 'hw.clockrate':");
+			warn("sysctlbyname 'hw.clockrate'");
 			return -1;
 		}
 
@@ -129,7 +131,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
 		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) < 0
 				|| !size) {
-			warn("sysctlbyname 'kern.cp_time':");
+			warn("sysctlbyname 'kern.cp_time'");
 			return -1;
 		}
 

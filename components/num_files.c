@@ -2,6 +2,7 @@
 #include "../util.h"
 
 #include <dirent.h>
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -13,7 +14,7 @@ num_files(const char *path)
 	int num;
 
 	if (!(fd = opendir(path))) {
-		warn("opendir '%s':", path);
+		warn("opendir '%s'", path);
 		return NULL;
 	}
 

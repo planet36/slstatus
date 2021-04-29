@@ -3,6 +3,7 @@
 #include "../util.h"
 
 #include <assert.h>
+#include <err.h>
 #include <stdio.h>
 #include <sys/statvfs.h>
 
@@ -15,7 +16,7 @@ static int
 update_fs(const char *path)
 {
 	if (statvfs(path, &fs) < 0) {
-		warn("statvfs '%s':", path);
+		warn("statvfs '%s'", path);
 		return -1;
 	}
 

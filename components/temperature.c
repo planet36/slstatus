@@ -15,6 +15,7 @@
 		return bprintf("%0.f", temp / 1000.0);
 	}
 #elif defined(__OpenBSD__)
+	#include <err.h>
 	#include <stdio.h>
 	#include <sys/time.h> /* before <sys/sensors.h> for struct timeval */
 	#include <sys/sensors.h>
@@ -36,7 +37,7 @@
 		size = sizeof(temp);
 
 		if (sysctl(mib, LEN(mib), &temp, &size, NULL, 0) < 0) {
-			warn("sysctl 'SENSOR_TEMP':");
+			warn("sysctl 'SENSOR_TEMP'");
 			return NULL;
 		}
 

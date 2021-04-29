@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 #include <sys/utsname.h>
 
@@ -10,7 +11,7 @@ kernel_release(void)
 	struct utsname udata;
 
 	if (uname(&udata) < 0) {
-		warn("uname:");
+		warn("uname");
 		return NULL;
 	}
 

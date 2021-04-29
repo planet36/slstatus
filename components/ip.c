@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -21,7 +22,7 @@ ip(const char *interface, unsigned short sa_family)
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) < 0) {
-		warn("getifaddrs:");
+		warn("getifaddrs");
 		return NULL;
 	}
 
@@ -35,7 +36,7 @@ ip(const char *interface, unsigned short sa_family)
 		    (ifa->ifa_addr->sa_family == sa_family)) {
 			freeifaddrs(ifaddr);
 			if (s != 0) {
-				warn("getnameinfo: %s", gai_strerror(s));
+				warnx("getnameinfo: %s", gai_strerror(s));
 				return NULL;
 			}
 			return bprintf("%s", host);

@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 
 const char *
@@ -10,7 +11,7 @@ datetime(const char *fmt)
 
 	t = time(NULL);
 	if (!strftime(buf, sizeof(buf), fmt, localtime(&t))) {
-		warn("strftime: Result string exceeds buffer size");
+		warnx("strftime: Result string exceeds buffer size");
 		return NULL;
 	}
 

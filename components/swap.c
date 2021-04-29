@@ -57,6 +57,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		return 0;
 	}
 #elif defined(__OpenBSD__)
+	#include <err.h>
 	#include <stdlib.h>
 	#include <sys/swap.h>
 	#include <sys/types.h>
@@ -69,20 +70,20 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		int rnswap, nswap, i;
 
 		if ((nswap = swapctl(SWAP_NSWAP, 0, 0)) < 1) {
-			warn("swaptctl 'SWAP_NSWAP':");
+			warn("swaptctl 'SWAP_NSWAP'");
 			return -1;
 		}
 		if (!(fsep = sep = calloc(nswap, sizeof(*sep)))) {
-			warn("calloc 'nswap':");
+			warn("calloc 'nswap'");
 			return -1;
 		}
 		if ((rnswap = swapctl(SWAP_STATS, (void *)sep, nswap)) < 0) {
-			warn("swapctl 'SWAP_STATA':");
+			warn("swapctl 'SWAP_STATA'");
 			free(fsep);
 			return -1;
 		}
 		if (nswap != rnswap) {
-			warn("getstats: SWAP_STATS != SWAP_NSWAP");
+			warnx("getstats: SWAP_STATS != SWAP_NSWAP");
 			free(fsep);
 			return -1;
 		}
@@ -104,6 +105,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		return 0;
 	}
 #elif defined(__FreeBSD__)
+	#include <err.h>
 	#include <stdlib.h>
 	#include <sys/types.h>
 	#include <fcntl.h>
@@ -118,12 +120,12 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 
 		kd = kvm_openfiles(NULL, "/dev/null", NULL, 0, NULL);
 		if (kd == NULL) {
-			warn("kvm_openfiles '/dev/null':");
+			warn("kvm_openfiles '/dev/null'");
 			return -1;
 		}
 
 		if (kvm_getswapinfo(kd, swap_info, LEN(swap_info), 0 /* Unused flags */) < 0) {
-			warn("kvm_getswapinfo:");
+			warn("kvm_getswapinfo");
 			kvm_close(kd);
 			return -1;
 		}

@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -11,12 +12,12 @@ run_command(const char *cmd)
 	FILE *fp;
 
 	if (!(fp = popen(cmd, "r"))) {
-		warn("popen '%s':", cmd);
+		warn("popen '%s'", cmd);
 		return NULL;
 	}
 	p = fgets(buf, sizeof(buf) - 1, fp);
 	if (pclose(fp) < 0) {
-		warn("pclose '%s':", cmd);
+		warn("pclose '%s'", cmd);
 		return NULL;
 	}
 	if (!p) {

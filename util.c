@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "util.h"
 
+#include <err.h>
 #include <errno.h>
 #include <math.h>
 #include <stdarg.h>
@@ -12,29 +13,6 @@ static const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z",
                                      "Y" };
 static const char *prefix_1024[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
                                      "Zi", "Yi" };
-
-static void
-verr(const char *fmt, va_list ap)
-{
-	vfprintf(stderr, fmt, ap);
-
-	if (fmt[0] && fmt[strlen(fmt) - 1] == ':') {
-		fputc(' ', stderr);
-		perror(NULL);
-	} else {
-		fputc('\n', stderr);
-	}
-}
-
-void
-warn(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-	verr(fmt, ap);
-	va_end(ap);
-}
 
 void
 die(const char *fmt, ...)
@@ -63,10 +41,10 @@ evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
 	ret = vsnprintf(str, size, fmt, ap);
 
 	if (ret < 0) {
-		warn("vsnprintf:");
+		warn("vsnprintf");
 		return -1;
 	} else if ((size_t)ret >= size) {
-		warn("vsnprintf: Output truncated");
+		warnx("vsnprintf: Output truncated");
 		return -1;
 	}
 
@@ -116,7 +94,7 @@ fmt_human(uintmax_t num, int base)
 		prefixlen = LEN(prefix_1024);
 		break;
 	default:
-		warn("fmt_human: Invalid base");
+		warnx("fmt_human: Invalid base");
 		return NULL;
 	}
 
@@ -146,7 +124,7 @@ fmt_human_3(uintmax_t num, int base)
 		prefixlen = LEN(prefix_1024);
 		break;
 	default:
-		warn("fmt_human: Invalid base");
+		warnx("fmt_human: Invalid base");
 		return NULL;
 	}
 
@@ -170,7 +148,7 @@ pscanf(const char *path, const char *fmt, ...)
 	int n;
 
 	if (!(fp = fopen(path, "r"))) {
-		warn("fopen '%s':", path);
+		warn("fopen '%s'", path);
 		return -1;
 	}
 	va_start(ap, fmt);
