@@ -310,3 +310,51 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 		*meter++ = FULL_BLOCK;
 	}
 }
+
+/* Fill a meter with ASCII characters.
+ * The filled region is proportional to x, starting at the left.
+ */
+void
+left_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
+{
+	if (meter_width == 0) {
+		return;
+	}
+
+	clamp(&x);
+
+	// round to nearest int
+	const size_t num_filled = (size_t)(x * meter_width + 0.5);
+
+	size_t i = 0;
+	for (; i < num_filled; ++i) {
+		meter[i] = fill;
+	}
+	for (; i < meter_width; ++i) {
+		meter[i] = unfill;
+	}
+}
+
+/* Fill a meter with ASCII characters.
+ * The filled region is proportional to x, starting at the right.
+ */
+void
+right_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
+{
+	if (meter_width == 0) {
+		return;
+	}
+
+	clamp(&x);
+
+	// round to nearest int
+	const size_t num_unfilled = meter_width - (size_t)(x * meter_width + 0.5);
+
+	size_t i = 0;
+	for (; i < num_unfilled; ++i) {
+		meter[i] = unfill;
+	}
+	for (; i < meter_width; ++i) {
+		meter[i] = fill;
+	}
+}
