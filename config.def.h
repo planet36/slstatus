@@ -10,9 +10,6 @@ static const char unknown_str[] = "n/a";
 /* maximum output string length */
 #define MAXLEN 2048
 
-/* all percentages will be clamped to 99 */
-#define MAX_PCT_99
-
 /*
  * function            description                     argument (example)
  *

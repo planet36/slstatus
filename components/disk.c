@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <sys/statvfs.h>
 
+/* percentages will be clamped to 99 */
+#define MAX_PCT_99
+
 #define METER_WIDTH 10
 static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 
@@ -62,8 +65,8 @@ disk_perc(const char *path)
 	used = 1 - (double)fs.f_bavail / fs.f_blocks;
 
 #ifdef MAX_PCT_99
-		if (used > 0.99)
-			used = 0.99;
+	if (used > 0.99)
+		used = 0.99;
 #endif
 
 	return bprintf("%.0f", 100 * used);

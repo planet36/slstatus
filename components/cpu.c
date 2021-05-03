@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/* percentages will be clamped to 99 */
+#define MAX_PCT_99
+
 #define HIST_WIDTH 10
 static_assert(HIST_WIDTH > 0, "HIST_WIDTH must be > 0");
 
@@ -263,8 +266,8 @@ cpu_perc(void)
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
 #ifdef MAX_PCT_99
-		if (used > 0.99)
-			used = 0.99;
+	if (used > 0.99)
+		used = 0.99;
 #endif
 
 	return bprintf("%.0f", 100 * used);

@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* percentages will be clamped to 99 */
+#define MAX_PCT_99
+
 #define HIST_WIDTH 10
 static_assert(HIST_WIDTH > 0, "HIST_WIDTH must be > 0");
 
@@ -209,8 +212,8 @@ swap_perc(void)
 	used = (double)used_bytes / total_bytes;
 
 #ifdef MAX_PCT_99
-		if (used > 0.99)
-			used = 0.99;
+	if (used > 0.99)
+		used = 0.99;
 #endif
 
 	return bprintf("%.0f", 100 * used);
