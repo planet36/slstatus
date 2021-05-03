@@ -27,6 +27,7 @@ static const char unknown_str[] = "n/a";
  * clockdiff           elapsed time between calls      NULL
  * clocktime           high-resolution clock           NULL
  * counter             integer counter of samples      NULL
+ * cpu_cmeter          cpu usage meter, ascii          NULL
  * cpu_freq            cpu frequency in MHz            NULL
  * cpu_hist            cpu usage history, unicode      NULL
  * cpu_meter           cpu usage meter, unicode        NULL
