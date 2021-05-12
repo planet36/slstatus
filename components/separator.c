@@ -6,5 +6,5 @@
 const char *
 separator(const char *separator)
 {
-    return separator;
+	return separator;
 }
