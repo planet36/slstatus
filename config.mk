@@ -10,7 +10,7 @@ MANPREFIX = $(PREFIX)/share/man
 
 # includes and libs
 INCS = `pkg-config --cflags x11`
-LIBS = `pkg-config --libs   x11` -lm
+LIBS = `pkg-config --libs   x11`
 
 # flags
 CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE

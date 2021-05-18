@@ -4,8 +4,6 @@
 #include "meter.h"
 #include "util.h"
 
-#include <math.h>
-
 // https://www.unicode.org/charts/PDF/U2580.pdf
 
 static const wchar_t UPPER_HALF_BLOCK           = 0x2580;
@@ -125,6 +123,12 @@ static const wchar_t right_blocks[] = {
 	FULL_BLOCK,
 };
 
+static double
+my_fmod(double x, double y)
+{
+	return x - (intmax_t)(x / y) * y;
+}
+
 static void
 clamp(double *x)
 {
@@ -175,8 +179,8 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
 	/* Using "blocks_len - 1" instead of "blocks_len" in the calculations
 	 * produces a preferred distribution at the ends of the meter.
 	 */
-	// *blocks_index = (size_t)fmod(x * meter_width * blocks_len, blocks_len);
-	*blocks_index = (size_t)(fmod(x * meter_width * (blocks_len - 1U),
+	// *blocks_index = (size_t)my_fmod(x * meter_width * blocks_len, blocks_len);
+	*blocks_index = (size_t)(my_fmod(x * meter_width * (blocks_len - 1U),
 	                              blocks_len - 1U) + 0.5);
 
 	*right_width = meter_width - *left_width - 1U;
