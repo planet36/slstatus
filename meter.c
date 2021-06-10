@@ -65,6 +65,8 @@ static const wchar_t lower_blocks[] = {
 	FULL_BLOCK,
 };
 
+static const size_t num_lower_blocks = LEN(lower_blocks);
+
 static const wchar_t left_blocks[] = {
 	0x20,
 	LEFT_ONE_EIGHTH_BLOCK,
@@ -77,6 +79,8 @@ static const wchar_t left_blocks[] = {
 	FULL_BLOCK,
 };
 
+static const size_t num_left_blocks = LEN(left_blocks);
+
 static const wchar_t ver_lines[] = {
 	LEFT_ONE_EIGHTH_BLOCK,
 	VERTICAL_ONE_EIGHTH_BLOCK_2,
@@ -88,6 +92,8 @@ static const wchar_t ver_lines[] = {
 	RIGHT_ONE_EIGHTH_BLOCK,
 };
 
+static const size_t num_ver_lines = LEN(ver_lines);
+
 static const wchar_t hor_lines[] = {
 	LOWER_ONE_EIGHTH_BLOCK,
 	HORIZONTAL_ONE_EIGHTH_BLOCK_7,
@@ -98,6 +104,8 @@ static const wchar_t hor_lines[] = {
 	HORIZONTAL_ONE_EIGHTH_BLOCK_2,
 	UPPER_ONE_EIGHTH_BLOCK,
 };
+
+static const size_t num_hor_lines = LEN(hor_lines);
 
 static const wchar_t upper_blocks[] = {
 	0x20,
@@ -111,6 +119,8 @@ static const wchar_t upper_blocks[] = {
 	FULL_BLOCK,
 };
 
+static const size_t num_upper_blocks = LEN(upper_blocks);
+
 static const wchar_t right_blocks[] = {
 	0x20,
 	RIGHT_ONE_EIGHTH_BLOCK,
@@ -123,6 +133,8 @@ static const wchar_t right_blocks[] = {
 	FULL_BLOCK,
 };
 
+static const size_t num_right_blocks = LEN(right_blocks);
+
 static double
 my_fmod(double x, double y)
 {
@@ -132,11 +144,10 @@ my_fmod(double x, double y)
 static void
 clamp(double *x)
 {
-	if (*x < 0) {
+	if (*x < 0)
 		*x = 0;
-	} else if (*x > 1) {
+	else if (*x > 1)
 		*x = 1;
-	}
 }
 
 /* Map the real number in the interval [0, 1]
@@ -158,23 +169,21 @@ map_to_uint(double x, size_t b)
  */
 static void
 calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
-		size_t *left_width, size_t *blocks_index, size_t *right_width)
+                    size_t *left_width, size_t *blocks_index, size_t *right_width)
 {
 	*left_width = 0;
 	*blocks_index = -1;
 	*right_width = 0;
 
-	if (meter_width == 0) {
+	if (meter_width == 0)
 		return;
-	}
 
 	clamp(&x);
 
 	*left_width = (size_t)(x * meter_width);
 
-	if (*left_width == meter_width) {
+	if (*left_width == meter_width)
 		return;
-	}
 
 	/* Using "blocks_len - 1" instead of "blocks_len" in the calculations
 	 * produces a preferred distribution at the ends of the meter.
@@ -193,7 +202,7 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
 wchar_t
 lower_blocks_1(double x)
 {
-	return lower_blocks[map_to_uint(x, LEN(lower_blocks))];
+	return lower_blocks[map_to_uint(x, num_lower_blocks)];
 }
 
 /* Return a Unicode horizontal 1/8 block character (whose height is proportional to x).
@@ -201,7 +210,7 @@ lower_blocks_1(double x)
 wchar_t
 hor_lines_1(double x)
 {
-	return hor_lines[map_to_uint(x, LEN(hor_lines))];
+	return hor_lines[map_to_uint(x, num_hor_lines)];
 }
 
 /* Return a Unicode upper block character (whose height is proportional to x).
@@ -209,7 +218,7 @@ hor_lines_1(double x)
 wchar_t
 upper_blocks_1(double x)
 {
-	return upper_blocks[map_to_uint(x, LEN(upper_blocks))];
+	return upper_blocks[map_to_uint(x, num_upper_blocks)];
 }
 
 /* Fill a meter with Unicode left block characters.
@@ -227,24 +236,20 @@ left_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
-	if (meter_width == 0) {
+	if (meter_width == 0)
 		return;
-	}
 
-	calc_meter_segments(x, meter_width, LEN(left_blocks),
+	calc_meter_segments(x, meter_width, num_left_blocks,
 	                    &left_width, &blocks_index, &right_width);
 
-	for (i = 0; i < left_width; ++i) {
+	for (i = 0; i < left_width; ++i)
 		*meter++ = FULL_BLOCK;
-	}
 
-	if (blocks_index != (size_t)-1) {
+	if (blocks_index != (size_t)-1)
 		*meter++ = left_blocks[blocks_index];
-	}
 
-	for (i = 0; i < right_width; ++i) {
+	for (i = 0; i < right_width; ++i)
 		*meter++ = ' ';
-	}
 }
 
 /* Fill a meter with a Unicode vertical 1/8 block character.
@@ -255,33 +260,28 @@ ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
-	if (meter_width == 0) {
+	if (meter_width == 0)
 		return;
-	}
 
-	calc_meter_segments(x, meter_width, LEN(ver_lines),
+	calc_meter_segments(x, meter_width, num_ver_lines,
 	                    &left_width, &blocks_index, &right_width);
 
 	if (left_width == meter_width) {
 		// Special case when the vertical line will be at the right end
 
-		for (i = 1; i < left_width; ++i) {
+		for (i = 1; i < left_width; ++i)
 			*meter++ = ' ';
-		}
 
 		*meter++ = RIGHT_ONE_EIGHTH_BLOCK;
 	} else {
-		for (i = 0; i < left_width; ++i) {
+		for (i = 0; i < left_width; ++i)
 			*meter++ = ' ';
-		}
 
-		if (blocks_index != (size_t)-1) {
+		if (blocks_index != (size_t)-1)
 			*meter++ = ver_lines[blocks_index];
-		}
 
-		for (i = 0; i < right_width; ++i) {
+		for (i = 0; i < right_width; ++i)
 			*meter++ = ' ';
-		}
 	}
 }
 
@@ -293,26 +293,22 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
-	if (meter_width == 0) {
+	if (meter_width == 0)
 		return;
-	}
 
-	calc_meter_segments(x, meter_width, LEN(right_blocks),
+	calc_meter_segments(x, meter_width, num_right_blocks,
 	                    &left_width, &blocks_index, &right_width);
 
 	// left_width and right_width are swapped
 
-	for (i = 0; i < right_width; ++i) {
+	for (i = 0; i < right_width; ++i)
 		*meter++ = ' ';
-	}
 
-	if (blocks_index != (size_t)-1) {
+	if (blocks_index != (size_t)-1)
 		*meter++ = right_blocks[blocks_index];
-	}
 
-	for (i = 0; i < left_width; ++i) {
+	for (i = 0; i < left_width; ++i)
 		*meter++ = FULL_BLOCK;
-	}
 }
 
 /* Fill a meter with ASCII characters.
@@ -321,22 +317,20 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 void
 left_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
 {
-	if (meter_width == 0) {
+	size_t i;
+
+	if (meter_width == 0)
 		return;
-	}
 
 	clamp(&x);
 
 	// round to nearest int
 	const size_t num_filled = (size_t)(x * meter_width + 0.5);
 
-	size_t i = 0;
-	for (; i < num_filled; ++i) {
+	for (i = 0; i < num_filled; ++i)
 		meter[i] = fill;
-	}
-	for (; i < meter_width; ++i) {
+	for (; i < meter_width; ++i)
 		meter[i] = unfill;
-	}
 }
 
 /* Fill a meter with ASCII characters.
@@ -345,20 +339,18 @@ left_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
 void
 right_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
 {
-	if (meter_width == 0) {
+	size_t i;
+
+	if (meter_width == 0)
 		return;
-	}
 
 	clamp(&x);
 
 	// round to nearest int
 	const size_t num_unfilled = meter_width - (size_t)(x * meter_width + 0.5);
 
-	size_t i = 0;
-	for (; i < num_unfilled; ++i) {
+	for (i = 0; i < num_unfilled; ++i)
 		meter[i] = unfill;
-	}
-	for (; i < meter_width; ++i) {
+	for (; i < meter_width; ++i)
 		meter[i] = fill;
-	}
 }
