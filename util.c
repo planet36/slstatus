@@ -80,7 +80,7 @@ bprintf(const char *fmt, ...)
 const char *
 fmt_human(uintmax_t num, int base)
 {
-	double scaled;
+	long double scaled;
 	size_t i, prefixlen;
 	const char **prefix;
 
@@ -103,7 +103,7 @@ fmt_human(uintmax_t num, int base)
 		scaled /= base;
 	}
 
-	return bprintf("%.1f %s", scaled, prefix[i]);
+	return bprintf("%.1Lf %s", scaled, prefix[i]);
 }
 
 const char *
