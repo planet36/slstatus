@@ -7,7 +7,7 @@
 
 extern char buf[1024];
 
-#define LEN(x) (sizeof(x) / sizeof((x)[0]))
+#define LEN(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 void die(const char *, ...) __attribute__ ((noreturn));
 
