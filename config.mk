@@ -6,7 +6,8 @@ VERSION := $(VERSION)-sdw
 
 # paths
 PREFIX ?= /usr/local
-MANPREFIX = $(PREFIX)/share/man
+BINDIR ?= $(PREFIX)/bin
+MANDIR ?= $(PREFIX)/share/man
 
 # includes and libs
 INCS = `pkg-config --cflags x11`
