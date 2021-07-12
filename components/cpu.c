@@ -168,7 +168,7 @@ cpu_cmeter(void)
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
-	left_cmeter(used, meter, METER_WIDTH, fill, unfill);
+	left_char_meter(used, meter, METER_WIDTH, fill, unfill);
 
 	return bprintf("%s", meter);
 }

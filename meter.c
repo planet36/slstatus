@@ -313,9 +313,16 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 
 /* Fill a meter with ASCII characters.
  * The filled region is proportional to x, starting at the left.
+ *
+ * x is in the interval [0, 1].
+ *
+ * meter is a buffer capable of holding meter_width characters
+ * (not including the terminating null character).
+ *
+ * It is the caller's responsibility to null-terminate the meter buffer.
  */
 void
-left_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
+left_char_meter(double x, char* meter, size_t meter_width, char fill, char unfill)
 {
 	size_t i;
 
@@ -337,7 +344,7 @@ left_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
  * The filled region is proportional to x, starting at the right.
  */
 void
-right_cmeter(double x, char* meter, size_t meter_width, char fill, char unfill)
+right_char_meter(double x, char* meter, size_t meter_width, char fill, char unfill)
 {
 	size_t i;
 
