@@ -14,11 +14,10 @@ INCS = `pkg-config --cflags x11`
 LIBS = `pkg-config --libs   x11`
 
 # flags
-CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE
+CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(INCS)
 DEPFLAGS += -MMD -MP
 CFLAGS += -O2 \
 		-Wno-format-nonliteral
-CFLAGS += $(INCS) $(CPPFLAGS) $(DEPFLAGS)
 LDLIBS += $(LIBS)
 # OpenBSD: add -lsndio
 # FreeBSD: add -lkvm -lsndio
