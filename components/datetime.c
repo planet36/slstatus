@@ -10,7 +10,7 @@ datetime(const char *fmt)
 	time_t t;
 
 	t = time(NULL);
-	if (!strftime(buf, sizeof(buf), fmt, localtime(&t))) {
+	if (strftime(buf, sizeof(buf), fmt, localtime(&t)) == 0 && strlen(fmt) > 0) {
 		warnx("strftime: Result string exceeds buffer size");
 		return NULL;
 	}
