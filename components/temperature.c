@@ -1,7 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
+#include <stddef.h>
+
 #if defined(__linux__)
+	#include <stdint.h>
 
 	const char *
 	temp(const char *file)

@@ -2,7 +2,9 @@
 #include "../util.h"
 
 #include <err.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <time.h>
 
 #if defined(CLOCK_BOOTTIME)
 	#define UPTIME_FLAG CLOCK_BOOTTIME

@@ -3,6 +3,7 @@
 
 #include <err.h>
 #include <stdio.h>
+#include <time.h>
 
 const char *
 datetime(const char *fmt)

@@ -14,6 +14,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
  * https://www.kernel.org/doc/html/latest/power/power_supply_class.html
  */
 	#include <limits.h>
+	#include <stdint.h>
 	#include <unistd.h>
 
 	static const char *
