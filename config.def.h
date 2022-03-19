@@ -91,6 +91,6 @@ static const struct component components[] = {
 	{ separator   , " ┆ "      , NULL          } ,
 	{ netspeed_tx , "%7sB/s ▲" , "enp0s3"      } ,
 	{ separator   , " ┆ "      , NULL          } ,
-	{ datetime    , "%s"       , "%a %b %d %T" } ,
+	{ datetime    , "%s"       , "%a %b %d %T %Z" } ,
 
 };
