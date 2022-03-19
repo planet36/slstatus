@@ -23,6 +23,7 @@ const char *cpu_perc(void);
 
 /* datetime */
 const char *datetime(const char *fmt);
+const char *datetimetz(const char *fmt);
 
 /* disk */
 const char *disk_free(const char *path);
