@@ -26,7 +26,7 @@ datetimetz(const char *fmt)
 {
 	size_t tz_len;
 	const char *tz_old;
-	const char *tz_new;
+	char *tz_new;
 	const char *result;
 
 	if (strncmp(fmt, "TZ=", strlen("TZ=")) != 0)
@@ -34,7 +34,7 @@ datetimetz(const char *fmt)
 
 	fmt += strlen("TZ=");
 	tz_len = strcspn(fmt, " "); // count non-spaces
-	tz_new = strndupa(fmt, tz_len);
+	tz_new = strndup(fmt, tz_len);
 	fmt += tz_len;
 	fmt += strspn(fmt, " "); // count spaces
 
@@ -57,6 +57,8 @@ datetimetz(const char *fmt)
 	}
 
 	tzset();
+
+	free(tz_new);
 
 	return result;
 }
