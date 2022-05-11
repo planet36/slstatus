@@ -1,11 +1,11 @@
 /* See LICENSE file for copyright and license details. */
 #include "../util.h"
 
-#include <X11/Xlib.h>
 #include <ctype.h>
 #include <err.h>
 #include <stdio.h>
 #include <string.h>
+#include <X11/Xlib.h>
 
 /*
  * fmt consists of uppercase or lowercase 'c' for caps lock and/or 'n' for num
