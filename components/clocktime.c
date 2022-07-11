@@ -21,7 +21,7 @@ clockdiff(void)
 		return NULL;
 	}
 
-	now_time = timespec_to_double(&ts);
+	now_time = timespec_to_sec(&ts);
 
 	if (prev_time == 0) {
 		return NULL;
@@ -40,5 +40,5 @@ clocktime(void)
 		return NULL;
 	}
 
-	return bprintf("%.6f", timespec_to_double(&ts));
+	return bprintf("%.6f", timespec_to_sec(&ts));
 }

@@ -53,7 +53,7 @@ main(int argc, char *argv[])
 	const char *optstring = "+h1sv";
 	struct sigaction act;
 	sigset_t newmask, oldmask, waitmask;
-	const struct timeval interval_tv = milliseconds_to_timeval(interval);
+	const struct timeval interval_tv = msec_to_timeval(interval);
 	const struct itimerval itv = {
 	             .it_interval = interval_tv,
 	             .it_value = interval_tv}; // If zero, the alarm is disabled.
@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
 			die("clock_gettime:");
 		}
-		now_time = timespec_to_double(&start);
+		now_time = timespec_to_sec(&start);
 		delta_time = now_time - prev_time;
 		prev_time = now_time;
 

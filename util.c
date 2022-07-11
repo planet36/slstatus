@@ -142,13 +142,14 @@ fmt_human_3(uintmax_t num, int base)
 }
 
 int
-pscanf(const char *path, const char *fmt, ...)
+pscanf(const char* path, const char* fmt, ...)
 {
-	FILE *fp;
+	FILE* fp;
 	va_list ap;
 	int n;
 
-	if (!(fp = fopen(path, "r"))) {
+	if (!(fp = fopen(path, "r")))
+	{
 		warn("fopen '%s'", path);
 		return -1;
 	}
@@ -161,16 +162,16 @@ pscanf(const char *path, const char *fmt, ...)
 }
 
 double
-timespec_to_double(const struct timespec *ts)
+timespec_to_sec(const struct timespec* ts)
 {
 	return ts->tv_sec + copysign(ts->tv_nsec, ts->tv_sec) / 1E9;
 }
 
 struct timeval
-milliseconds_to_timeval(unsigned int milliseconds)
+msec_to_timeval(unsigned int msec)
 {
 	return (struct timeval){
-		.tv_sec = milliseconds / 1000U,
-		.tv_usec = (milliseconds % 1000U) * 1000U,
+	    .tv_sec = msec / 1000U,
+	    .tv_usec = (msec % 1000U) * 1000U,
 	};
 }
