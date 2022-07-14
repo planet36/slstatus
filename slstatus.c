@@ -43,14 +43,14 @@ terminate(const int signo)
 static void
 usage(const char* argv0)
 {
-	printf("usage: %s [-h] [-1] [-s] [-v]\n", argv0);
+	printf("usage: %s [-V] [-h] [-1] [-s]\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
 	int ch;
-	const char *optstring = "+h1sv";
+	const char *optstring = "+Vh1s";
 	struct sigaction act;
 	sigset_t newmask, oldmask, waitmask;
 	const struct timeval interval_tv = msec_to_timeval(interval);
@@ -69,6 +69,10 @@ main(int argc, char *argv[])
 	sflag = 0;
 	while ((ch = getopt(argc, argv, optstring)) != -1) {
 		switch (ch) {
+		case 'V':
+			printf("%s " VERSION "\n", argv[0]);
+			return 0;
+			break;
 		case 'h':
 			usage(argv[0]);
 			return 0;
@@ -78,10 +82,6 @@ main(int argc, char *argv[])
 			/* fallthrough */
 		case 's':
 			sflag = 1;
-			break;
-		case 'v':
-			printf("%s " VERSION "\n", argv[0]);
-			return 0;
 			break;
 		default:
 			usage(argv[0]);
