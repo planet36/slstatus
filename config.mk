@@ -10,7 +10,7 @@ BINDIR ?= $(PREFIX)/bin
 MANDIR ?= $(PREFIX)/share/man
 
 # includes and libs
-INCS = `pkg-config --cflags x11`
+#INCS = `pkg-config --cflags x11`
 LIBS = `pkg-config --libs   x11`
 
 # flags
