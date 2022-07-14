@@ -15,10 +15,7 @@ $(BIN): $(OBJS)
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(DEPFLAGS) $(CFLAGS) -o $@ -c $<
 
-$(OBJS): config.h config.mk
-
-config.h:
-	cp config.def.h config.h
+$(OBJS): config.mk
 
 options:
 	@echo $(BIN) build options:
