@@ -36,7 +36,7 @@ install: $(BIN)
 	cp -f $(BIN) "$(DESTDIR)$(BINDIR)"
 	chmod 755 "$(DESTDIR)$(BINDIR)/$(BIN)"
 	mkdir -p "$(DESTDIR)$(MANDIR)/man1"
-	sed "s/VERSION/$(VERSION)/g" < $(BIN).1 > "$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
+	cp -f $(BIN).1 "$(DESTDIR)$(MANDIR)/man1"
 	chmod 644 "$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
 uninstall:
