@@ -172,6 +172,6 @@ msec_to_timeval(unsigned int msec)
 {
 	return (struct timeval){
 	    .tv_sec = msec / 1000U,
-	    .tv_usec = (msec % 1000U) * 1000U,
+	    .tv_usec = (msec % 1000U) * 1000UL,
 	};
 }
