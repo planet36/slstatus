@@ -64,7 +64,7 @@ main(int argc, char *argv[])
 	char status[MAXLEN];
 	const char *res;
 
-	setlocale(LC_CTYPE, "");
+	(void)setlocale(LC_CTYPE, "");
 
 	sflag = 0;
 	while ((ch = getopt(argc, argv, optstring)) != -1) {
@@ -144,7 +144,7 @@ main(int argc, char *argv[])
 
 		if (sflag) {
 			puts(status);
-			fflush(stdout);
+			(void)fflush(stdout);
 			if (ferror(stdout))
 				die("puts:");
 		} else {

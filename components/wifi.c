@@ -38,7 +38,7 @@
 			return NULL;
 		}
 		p = fgets(status, 5, fp);
-		fclose(fp);
+		(void)fclose(fp);
 		if (!p || strcmp(status, "up\n") != 0) {
 			return NULL;
 		}
@@ -52,7 +52,7 @@
 			if (!(p = fgets(buf, sizeof(buf) - 1, fp)))
 				break;
 		}
-		fclose(fp);
+		(void)fclose(fp);
 		if (i < 2 || !p) {
 			return NULL;
 		}
@@ -62,7 +62,7 @@
 		}
 
 		datastart = (datastart+(strlen(interface)+1));
-		sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
+		(void)sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
 		/* 70 is the max of /proc/net/wireless */
