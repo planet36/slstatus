@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/* percentages will be clamped to 99 */
+//#define MAX_PCT_99
+
 #define METER_WIDTH 10
 static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 

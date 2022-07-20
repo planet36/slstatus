@@ -9,6 +9,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+/* percentages will be clamped to 99 */
+//#define MAX_PCT_99
+
 #define RSSI_TO_PERC(rssi) \
 			((rssi) >= -50) ? 100 : \
 			(((rssi) <= -100) ? 0 : \

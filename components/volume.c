@@ -8,6 +8,9 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+/* percentages will be clamped to 99 */
+//#define MAX_PCT_99
+
 #if defined(__OpenBSD__) | defined(__FreeBSD__)
 	#include <sys/queue.h>
 	#include <poll.h>
