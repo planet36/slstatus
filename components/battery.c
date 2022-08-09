@@ -89,6 +89,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 			{ "Charging",    "+" },
 			{ "Discharging", "-" },
 			{ "Full",        "o" },
+			{ "Not charging", "o" },
 		};
 		size_t i;
 		char path[PATH_MAX], state[12];
@@ -97,7 +98,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		              "/sys/class/power_supply/%s/status", bat) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%12s", state) != 1) {
+		if (pscanf(path, "%12[a-zA-Z ]", state) != 1) {
 			return NULL;
 		}
 
@@ -120,7 +121,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		              "/sys/class/power_supply/%s/status", bat) < 0) {
 			return NULL;
 		}
-		if (pscanf(path, "%12s", state) != 1) {
+		if (pscanf(path, "%12[a-zA-Z ]", state) != 1) {
 			return NULL;
 		}
 
