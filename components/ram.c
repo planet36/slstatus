@@ -50,6 +50,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		              "Mlocked: %*s kB\n" // discard
 		              "SwapTotal: %*s kB\n" // discard
 		              "SwapFree: %*s kB\n" // discard
+		              "Zswap: %*s kB\n" // discard
+		              "Zswapped: %*s kB\n" // discard
 		              "Dirty: %*s kB\n" // discard
 		              "Writeback: %*s kB\n" // discard
 		              "AnonPages: %*s kB\n" // discard
