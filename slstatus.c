@@ -43,7 +43,7 @@ terminate(const int signo)
 static void
 usage(const char* argv0)
 {
-	printf("usage: %s [-V] [-h] [-1] [-s]\n", argv0);
+	printf("Usage: %s [-V] [-h] [-1] [-s]\n", argv0);
 }
 
 int
