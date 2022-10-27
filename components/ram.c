@@ -95,6 +95,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		}
 
 		// TODO: maybe add this: uvmexp.inactive
+		// TODO: maybe use this: uvmexp.npages - uvmexp.active
 		free_bytes = pagetok(uvmexp.free, uvmexp.pageshift) * 1024;
 		total_bytes = pagetok(uvmexp.npages, uvmexp.pageshift) * 1024;
 		// TODO: maybe add this: uvmexp.wired
