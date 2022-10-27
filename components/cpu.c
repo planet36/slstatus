@@ -21,14 +21,16 @@ static const char fill = '=';
 static const char unfill = ' ';
 
 #if defined(__linux__)
+	#define CPU_FREQ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+
 	static int
 	calc_freq(uintmax_t *freq)
 	{
 		uintmax_t tmp_freq;
 
 		/* in kHz */
-		if (pscanf("/sys/devices/system/cpu/cpu0/cpufreq/"
-		           "scaling_cur_freq", "%ju", &tmp_freq) != 1) {
+		if (pscanf(CPU_FREQ,
+		           "%ju", &tmp_freq) != 1) {
 			return -1;
 		}
 

@@ -22,6 +22,8 @@
 	#include <limits.h>
 	#include <linux/wireless.h>
 
+	#define NET_OPERSTATE "/sys/class/net/%s/operstate"
+
 	const char *
 	wifi_perc(const char *interface)
 	{
@@ -33,7 +35,7 @@
 		FILE *fp;
 		double pct;
 
-		if (esnprintf(path, sizeof(path), "/sys/class/net/%s/operstate",
+		if (esnprintf(path, sizeof(path), NET_OPERSTATE,
 		              interface) < 0) {
 			return NULL;
 		}

@@ -8,13 +8,16 @@
 extern double delta_time; // seconds
 
 #if defined(__linux__)
+	#define NET_RX_BYTES "/sys/class/net/%s/statistics/rx_bytes"
+	#define NET_TX_BYTES "/sys/class/net/%s/statistics/tx_bytes"
+
 	static int
 	calc_rxbytes(const char *interface, uintmax_t *rxbytes)
 	{
 		char path[PATH_MAX];
 
 		if (esnprintf(path, sizeof(path),
-		              "/sys/class/net/%s/statistics/rx_bytes",
+		              NET_RX_BYTES,
 		              interface) < 0) {
 			return -1;
 		}
@@ -31,7 +34,7 @@ extern double delta_time; // seconds
 		char path[PATH_MAX];
 
 		if (esnprintf(path, sizeof(path),
-		              "/sys/class/net/%s/statistics/tx_bytes",
+		              NET_TX_BYTES,
 		              interface) < 0) {
 			return -1;
 		}

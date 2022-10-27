@@ -7,12 +7,14 @@
 	#include <stdint.h>
 	#include <stdio.h>
 
+	#define ENTROPY_AVAIL "/proc/sys/kernel/random/entropy_avail"
+
 	const char *
 	entropy([[maybe_unused]] const char *unused)
 	{
 		uintmax_t num;
 
-		if (pscanf("/proc/sys/kernel/random/entropy_avail", "%ju", &num)
+		if (pscanf(ENTROPY_AVAIL, "%ju", &num)
 		    != 1) {
 			return NULL;
 		}
