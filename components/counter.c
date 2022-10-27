@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Steven Ward
 // SPDX-License-Identifier: OSL-3.0
 
+#include "../slstatus.h"
 #include "../util.h"
 
 const char *

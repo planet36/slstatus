@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "../meter.h"
+#include "../slstatus.h"
 #include "../util.h"
 
 #include <assert.h>

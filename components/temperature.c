@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include "../slstatus.h"
 #include "../util.h"
 
 #include <stddef.h>
