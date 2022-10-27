@@ -106,10 +106,10 @@ static const char unfill = ' ';
 		return 0;
 	}
 #elif defined(__FreeBSD__)
+	#include <devstat.h>
 	#include <err.h>
 	#include <sys/param.h>
 	#include <sys/sysctl.h>
-	#include <devstat.h>
 
 	static int
 	calc_freq(uintmax_t *freq)

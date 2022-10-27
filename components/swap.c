@@ -111,11 +111,11 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 	}
 #elif defined(__FreeBSD__)
 	#include <err.h>
+	#include <fcntl.h>
+	#include <kvm.h>
 	#include <stdlib.h>
 	#include <sys/types.h>
-	#include <fcntl.h>
 	#include <unistd.h>
-	#include <kvm.h>
 
 	static int
 	update_swap_info()

@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #if defined(__OpenBSD__)
-	#include <sys/types.h>
 	#include <sys/socket.h>
+	#include <sys/types.h>
 #elif defined(__FreeBSD__)
 	#include <netinet/in.h>
 	#include <sys/socket.h>

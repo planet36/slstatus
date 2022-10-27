@@ -46,11 +46,11 @@ extern double delta_time; // seconds
 	}
 #elif defined(__OpenBSD__) | defined(__FreeBSD__)
 	#include <err.h>
-	#include <string.h>
 	#include <ifaddrs.h>
+	#include <net/if.h>
+	#include <string.h>
 	#include <sys/types.h>
 	#include <sys/socket.h>
-	#include <net/if.h>
 
 	static int
 	calc_rxbytes(const char *interface, uintmax_t *rxbytes)

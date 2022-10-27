@@ -13,10 +13,10 @@
 //#define MAX_PCT_99
 
 #if defined(__OpenBSD__) | defined(__FreeBSD__)
-	#include <sys/queue.h>
 	#include <poll.h>
 	#include <sndio.h>
 	#include <stdlib.h>
+	#include <sys/queue.h>
 
 	struct control {
 		LIST_ENTRY(control)	next;
