@@ -82,9 +82,8 @@ keymap([[maybe_unused]] const char *unused)
 	XFree(symbols);
 end:
 	XkbFreeKeyboard(desc, XkbSymbolsNameMask, 1);
-	if (XCloseDisplay(dpy)) {
+	if (XCloseDisplay(dpy))
 		warnx("XCloseDisplay: Failed to close display");
-	}
 
 	return layout;
 }

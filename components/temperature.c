@@ -12,9 +12,8 @@
 	{
 		uintmax_t temp;
 
-		if (pscanf(file, "%ju", &temp) != 1) {
+		if (pscanf(file, "%ju", &temp) != 1)
 			return NULL;
-		}
 
 		return bprintf("%0.f", temp / 1000.0);
 	}
