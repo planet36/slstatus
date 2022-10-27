@@ -120,8 +120,7 @@ static const char unfill = ' ';
 		size = sizeof(tmp_freq);
 
 		/* in MHz */
-		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) < 0
-				|| !size) {
+		if (sysctlbyname("hw.clockrate", &tmp_freq, &size, NULL, 0) < 0 || !size) {
 			warn("sysctlbyname 'hw.clockrate'");
 			return -1;
 		}
@@ -139,8 +138,7 @@ static const char unfill = ' ';
 
 		size = sizeof(a);
 
-		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) < 0
-				|| !size) {
+		if (sysctlbyname("kern.cp_time", &a, &size, NULL, 0) < 0 || !size) {
 			warn("sysctlbyname 'kern.cp_time'");
 			return -1;
 		}

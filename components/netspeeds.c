@@ -59,7 +59,7 @@ extern double delta_time; // seconds
 		struct if_data *ifd;
 		int if_ok = 0;
 
-		if (getifaddrs(&ifal) == -1) {
+		if (getifaddrs(&ifal) < 0) {
 			warnx("getifaddrs failed");
 			return -1;
 		}
@@ -86,7 +86,7 @@ extern double delta_time; // seconds
 		struct if_data *ifd;
 		int if_ok = 0;
 
-		if (getifaddrs(&ifal) == -1) {
+		if (getifaddrs(&ifal) < 0) {
 			warnx("getifaddrs failed");
 			return -1;
 		}
