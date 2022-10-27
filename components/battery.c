@@ -323,13 +323,13 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 			return NULL;
 
 		switch (state) {
-			case 0:
-			case 2:
-				return "+";
-			case 1:
-				return "-";
-			default:
-				return "?";
+		case 0: /* FALLTHROUGH */
+		case 2:
+			return "+";
+		case 1:
+			return "-";
+		default:
+			return "?";
 		}
 	}
 

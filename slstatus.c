@@ -79,7 +79,7 @@ main(int argc, char *argv[])
 			break;
 		case '1':
 			done = 1;
-			/* fallthrough */
+			/* FALLTHROUGH */
 		case 's':
 			sflag = 1;
 			break;
