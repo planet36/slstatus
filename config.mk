@@ -17,7 +17,7 @@ LIBS = `pkg-config --libs   x11`
 CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(INCS)
 DEPFLAGS += -MMD -MP
 CFLAGS += -O2 \
-		-Wno-format-nonliteral
+		-std=c2x
 LDLIBS += $(LIBS)
 # OpenBSD: add -lsndio
 # FreeBSD: add -lkvm -lsndio
