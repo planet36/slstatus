@@ -9,7 +9,7 @@
 #include <time.h>
 
 const char *
-clockdiff(void)
+clockdiff([[maybe_unused]] const char *unused)
 {
 	double prev_time;
 	static double now_time;
@@ -32,7 +32,7 @@ clockdiff(void)
 }
 
 const char *
-clocktime(void)
+clocktime([[maybe_unused]] const char *unused)
 {
 	struct timespec ts;
 

@@ -148,7 +148,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 #endif
 
 const char *
-swap_free(void)
+swap_free([[maybe_unused]] const char *unused)
 {
 	if (update_swap_info() < 0) {
 		return NULL;
@@ -158,7 +158,7 @@ swap_free(void)
 }
 
 const char *
-swap_hist(void)
+swap_hist([[maybe_unused]] const char *unused)
 {
 	double used;
 	static int initialized;
@@ -186,7 +186,7 @@ swap_hist(void)
 }
 
 const char *
-swap_meter(void)
+swap_meter([[maybe_unused]] const char *unused)
 {
 	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
@@ -203,7 +203,7 @@ swap_meter(void)
 }
 
 const char *
-swap_perc(void)
+swap_perc([[maybe_unused]] const char *unused)
 {
 	double used;
 
@@ -222,7 +222,7 @@ swap_perc(void)
 }
 
 const char *
-swap_total(void)
+swap_total([[maybe_unused]] const char *unused)
 {
 	if (update_swap_info() < 0) {
 		return NULL;
@@ -232,7 +232,7 @@ swap_total(void)
 }
 
 const char *
-swap_used(void)
+swap_used([[maybe_unused]] const char *unused)
 {
 	if (update_swap_info() < 0) {
 		return NULL;

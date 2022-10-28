@@ -7,7 +7,7 @@
 #include <sys/utsname.h>
 
 const char *
-kernel_release(void)
+kernel_release([[maybe_unused]] const char *unused)
 {
 	struct utsname udata;
 

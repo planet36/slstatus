@@ -8,18 +8,18 @@ const char *battery_remaining(const char *);
 const char *battery_state(const char *);
 
 /* clocktime */
-const char *clockdiff(void);
-const char *clocktime(void);
+const char *clockdiff(const char *unused);
+const char *clocktime(const char *unused);
 
 /* counter */
-const char *counter(void);
+const char *counter(const char *unused);
 
 /* cpu */
-const char *cpu_cmeter(void);
-const char *cpu_freq(void);
-const char *cpu_hist(void);
-const char *cpu_meter(void);
-const char *cpu_perc(void);
+const char *cpu_cmeter(const char *unused);
+const char *cpu_freq(const char *unused);
+const char *cpu_hist(const char *unused);
+const char *cpu_meter(const char *unused);
+const char *cpu_perc(const char *unused);
 
 /* datetime */
 const char *datetime(const char *fmt);
@@ -33,26 +33,26 @@ const char *disk_total(const char *path);
 const char *disk_used(const char *path);
 
 /* entropy */
-const char *entropy(void);
+const char *entropy(const char *unused);
 
 /* hostname */
-const char *hostname(void);
+const char *hostname(const char *unused);
 
 /* ip */
 const char *ipv4(const char *interface);
 const char *ipv6(const char *interface);
 
 /* kernel_release */
-const char *kernel_release(void);
+const char *kernel_release(const char *unused);
 
 /* keyboard_indicators */
 const char *keyboard_indicators(const char *fmt);
 
 /* keymap */
-const char *keymap(void);
+const char *keymap(const char *unused);
 
 /* load_avg */
-const char *load_avg(void);
+const char *load_avg(const char *unused);
 
 /* netspeeds */
 const char *netspeed_rx(const char *interface);
@@ -62,12 +62,12 @@ const char *netspeed_tx(const char *interface);
 const char *num_files(const char *path);
 
 /* ram */
-const char *ram_free(void);
-const char *ram_hist(void);
-const char *ram_meter(void);
-const char *ram_perc(void);
-const char *ram_total(void);
-const char *ram_used(void);
+const char *ram_free(const char *unused);
+const char *ram_hist(const char *unused);
+const char *ram_meter(const char *unused);
+const char *ram_perc(const char *unused);
+const char *ram_total(const char *unused);
+const char *ram_used(const char *unused);
 
 /* run_command */
 const char *run_command(const char *cmd);
@@ -76,23 +76,23 @@ const char *run_command(const char *cmd);
 const char *separator(const char *separator);
 
 /* swap */
-const char *swap_free(void);
-const char *swap_hist(void);
-const char *swap_meter(void);
-const char *swap_perc(void);
-const char *swap_total(void);
-const char *swap_used(void);
+const char *swap_free(const char *unused);
+const char *swap_hist(const char *unused);
+const char *swap_meter(const char *unused);
+const char *swap_perc(const char *unused);
+const char *swap_total(const char *unused);
+const char *swap_used(const char *unused);
 
 /* temperature */
 const char *temp(const char *);
 
 /* uptime */
-const char *uptime(void);
+const char *uptime(const char *unused);
 
 /* user */
-const char *gid(void);
-const char *uid(void);
-const char *username(void);
+const char *gid(const char *unused);
+const char *uid(const char *unused);
+const char *username(const char *unused);
 
 /* volume */
 const char *vol_perc(const char *card);

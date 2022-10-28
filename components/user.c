@@ -9,13 +9,13 @@
 #include <unistd.h>
 
 const char *
-gid(void)
+gid([[maybe_unused]] const char *unused)
 {
 	return bprintf("%d", getgid());
 }
 
 const char *
-username(void)
+username([[maybe_unused]] const char *unused)
 {
 	struct passwd *pw;
 
@@ -28,7 +28,7 @@ username(void)
 }
 
 const char *
-uid(void)
+uid([[maybe_unused]] const char *unused)
 {
 	return bprintf("%d", geteuid());
 }

@@ -5,7 +5,7 @@
 #include "../util.h"
 
 const char *
-counter(void)
+counter([[maybe_unused]] const char *unused)
 {
 	static uintmax_t i;
 	return bprintf("%ju", i++);

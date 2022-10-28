@@ -140,7 +140,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 #endif
 
 const char *
-ram_free(void)
+ram_free([[maybe_unused]] const char *unused)
 {
 	if (update_mem_info() < 0) {
 		return NULL;
@@ -150,7 +150,7 @@ ram_free(void)
 }
 
 const char *
-ram_hist(void)
+ram_hist([[maybe_unused]] const char *unused)
 {
 	double used;
 	static int initialized;
@@ -178,7 +178,7 @@ ram_hist(void)
 }
 
 const char *
-ram_meter(void)
+ram_meter([[maybe_unused]] const char *unused)
 {
 	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
@@ -195,7 +195,7 @@ ram_meter(void)
 }
 
 const char *
-ram_perc(void)
+ram_perc([[maybe_unused]] const char *unused)
 {
 	double used;
 
@@ -214,7 +214,7 @@ ram_perc(void)
 }
 
 const char *
-ram_total(void)
+ram_total([[maybe_unused]] const char *unused)
 {
 	if (update_mem_info() < 0) {
 		return NULL;
@@ -224,7 +224,7 @@ ram_total(void)
 }
 
 const char *
-ram_used(void)
+ram_used([[maybe_unused]] const char *unused)
 {
 	if (update_mem_info() < 0) {
 		return NULL;

@@ -8,7 +8,7 @@
 	#include <stdio.h>
 
 	const char *
-	entropy(void)
+	entropy([[maybe_unused]] const char *unused)
 	{
 		uintmax_t num;
 
@@ -21,7 +21,7 @@
 	}
 #elif defined(__OpenBSD__) | defined(__FreeBSD__)
 	const char *
-	entropy(void)
+	entropy([[maybe_unused]] const char *unused)
 	{
 		/* Unicode Character 'INFINITY' (U+221E) */
 		return "\xe2\x88\x9e";

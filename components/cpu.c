@@ -151,7 +151,7 @@ static const char unfill = ' ';
 #endif
 
 const char *
-cpu_cmeter(void)
+cpu_cmeter([[maybe_unused]] const char *unused)
 {
 	static uintmax_t idle;
 	uintmax_t oldidle = idle;
@@ -176,7 +176,7 @@ cpu_cmeter(void)
 }
 
 const char *
-cpu_freq(void)
+cpu_freq([[maybe_unused]] const char *unused)
 {
 	uintmax_t freq; // Hz
 
@@ -188,7 +188,7 @@ cpu_freq(void)
 }
 
 const char *
-cpu_hist(void)
+cpu_hist([[maybe_unused]] const char *unused)
 {
 	static uintmax_t idle;
 	uintmax_t oldidle = idle;
@@ -224,7 +224,7 @@ cpu_hist(void)
 }
 
 const char *
-cpu_meter(void)
+cpu_meter([[maybe_unused]] const char *unused)
 {
 	static uintmax_t idle;
 	uintmax_t oldidle = idle;
@@ -249,7 +249,7 @@ cpu_meter(void)
 }
 
 const char *
-cpu_perc(void)
+cpu_perc([[maybe_unused]] const char *unused)
 {
 	static uintmax_t idle;
 	uintmax_t oldidle = idle;

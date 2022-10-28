@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 const char *
-hostname(void)
+hostname([[maybe_unused]] const char *unused)
 {
 	if (gethostname(buf, sizeof(buf)) < 0) {
 		warn("gethostbyname");

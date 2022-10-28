@@ -14,7 +14,7 @@
 #include <X11/Xlib.h>
 
 struct component {
-	const char *(*func)();
+	const char *(*func)(const char *);
 	const char *fmt;
 	const char *args;
 };

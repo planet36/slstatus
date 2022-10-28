@@ -16,7 +16,7 @@
 #endif
 
 const char *
-uptime(void)
+uptime([[maybe_unused]] const char *unused)
 {
 	uintmax_t h, m;
 	struct timespec uptime;

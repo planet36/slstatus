@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 const char *
-load_avg(void)
+load_avg([[maybe_unused]] const char *unused)
 {
 	double avgs[3];
 
