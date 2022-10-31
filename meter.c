@@ -4,6 +4,10 @@
 #include "meter.h"
 #include "util.h"
 
+// https://www.unicode.org/charts/PDF/U0000.pdf
+
+static const wchar_t SPACE = 0x0020;
+
 // https://www.unicode.org/charts/PDF/U2580.pdf
 
 static const wchar_t UPPER_HALF_BLOCK           = 0x2580;
@@ -54,7 +58,7 @@ static const wchar_t RIGHT_THREE_QUARTERS_BLOCK = 0x1FB8A;
 static const wchar_t RIGHT_SEVEN_EIGHTHS_BLOCK  = 0x1FB8B;
 
 static const wchar_t lower_blocks[] = {
-	0x20,
+	SPACE,
 	LOWER_ONE_EIGHTH_BLOCK,
 	LOWER_ONE_QUARTER_BLOCK,
 	LOWER_THREE_EIGHTHS_BLOCK,
@@ -68,7 +72,7 @@ static const wchar_t lower_blocks[] = {
 static const size_t num_lower_blocks = LEN(lower_blocks);
 
 static const wchar_t left_blocks[] = {
-	0x20,
+	SPACE,
 	LEFT_ONE_EIGHTH_BLOCK,
 	LEFT_ONE_QUARTER_BLOCK,
 	LEFT_THREE_EIGHTHS_BLOCK,
@@ -108,7 +112,7 @@ static const wchar_t hor_lines[] = {
 static const size_t num_hor_lines = LEN(hor_lines);
 
 static const wchar_t upper_blocks[] = {
-	0x20,
+	SPACE,
 	UPPER_ONE_EIGHTH_BLOCK,
 	UPPER_ONE_QUARTER_BLOCK,
 	UPPER_THREE_EIGHTHS_BLOCK,
@@ -122,7 +126,7 @@ static const wchar_t upper_blocks[] = {
 static const size_t num_upper_blocks = LEN(upper_blocks);
 
 static const wchar_t right_blocks[] = {
-	0x20,
+	SPACE,
 	RIGHT_ONE_EIGHTH_BLOCK,
 	RIGHT_ONE_QUARTER_BLOCK,
 	RIGHT_THREE_EIGHTHS_BLOCK,
@@ -249,7 +253,7 @@ left_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 		*meter++ = left_blocks[blocks_index];
 
 	for (i = 0; i < right_width; ++i)
-		*meter++ = ' ';
+		*meter++ = SPACE;
 }
 
 /* Fill a meter with a Unicode vertical 1/8 block character.
@@ -270,18 +274,18 @@ ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
 		// Special case when the vertical line will be at the right end
 
 		for (i = 1; i < left_width; ++i)
-			*meter++ = ' ';
+			*meter++ = SPACE;
 
 		*meter++ = RIGHT_ONE_EIGHTH_BLOCK;
 	} else {
 		for (i = 0; i < left_width; ++i)
-			*meter++ = ' ';
+			*meter++ = SPACE;
 
 		if (blocks_index != (size_t)-1)
 			*meter++ = ver_lines[blocks_index];
 
 		for (i = 0; i < right_width; ++i)
-			*meter++ = ' ';
+			*meter++ = SPACE;
 	}
 }
 
@@ -302,7 +306,7 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 	// left_width and right_width are swapped
 
 	for (i = 0; i < right_width; ++i)
-		*meter++ = ' ';
+		*meter++ = SPACE;
 
 	if (blocks_index != (size_t)-1)
 		*meter++ = right_blocks[blocks_index];
