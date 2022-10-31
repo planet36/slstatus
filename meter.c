@@ -154,8 +154,8 @@ clamp(double* x)
 		*x = 1;
 }
 
-/** Map the real number \a x within the interval <code>[0, 1]</code> to an integer
-* within the interval <code>[0, b)</code>.
+/** Map the real number \a x within the interval <code>[0, 1]</code> to an
+* integer within the interval <code>[0, b)</code>.
 *
 * \pre \a b is at least \c 1.
 */
@@ -183,10 +183,10 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
                     size_t* left_width, size_t* blocks_index, size_t* right_width)
 {
 	*left_width = 0;
-	*blocks_index = -1;
+	*blocks_index = (size_t)-1;
 	*right_width = 0;
 
-	if (meter_width == 0)
+	if (meter_width == 0 || blocks_len == 0)
 		return;
 
 	clamp(&x);
@@ -207,7 +207,8 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
 	*right_width = meter_width - *left_width - 1U;
 }
 
-/** Return a Unicode lower block character (whose height is proportional to \a x).
+/** Return a Unicode lower block character (whose height is proportional to \a
+* x).
 *
 * \pre \a x is within the interval <code>[0, 1]</code>.
 */
@@ -217,7 +218,8 @@ lower_blocks_1(double x)
 	return lower_blocks[map_to_uint(x, num_lower_blocks)];
 }
 
-/** Return a Unicode horizontal 1/8 block character (whose height is proportional to \a x).
+/** Return a Unicode horizontal 1/8 block character (whose height is
+* proportional to \a x).
 *
 * \pre \a x is within the interval <code>[0, 1]</code>.
 */
@@ -227,7 +229,8 @@ hor_lines_1(double x)
 	return hor_lines[map_to_uint(x, num_hor_lines)];
 }
 
-/** Return a Unicode upper block character (whose height is proportional to \a x).
+/** Return a Unicode upper block character (whose height is proportional to \a
+* x).
 *
 * \pre \a x is within the interval <code>[0, 1]</code>.
 */
@@ -374,7 +377,8 @@ right_blocks_meter(double x, wchar_t* meter, size_t meter_width)
 * It is the caller's responsibility to null-terminate the \a meter buffer.
 */
 void
-left_char_meter(double x, char* meter, size_t meter_width, char fill, char unfill)
+left_char_meter(double x, char* meter, size_t meter_width,
+                char fill, char unfill)
 {
 	size_t i;
 
@@ -385,6 +389,7 @@ left_char_meter(double x, char* meter, size_t meter_width, char fill, char unfil
 
 	// round to nearest int
 	const size_t num_filled = (size_t)(x * meter_width + 0.5);
+	[[maybe_unused]] const size_t num_unfilled = meter_width - num_filled;
 
 	for (i = 0; i < num_filled; ++i)
 	{
@@ -408,7 +413,8 @@ left_char_meter(double x, char* meter, size_t meter_width, char fill, char unfil
 * It is the caller's responsibility to null-terminate the \a meter buffer.
 */
 void
-right_char_meter(double x, char* meter, size_t meter_width, char fill, char unfill)
+right_char_meter(double x, char* meter, size_t meter_width,
+                 char fill, char unfill)
 {
 	size_t i;
 
@@ -418,7 +424,8 @@ right_char_meter(double x, char* meter, size_t meter_width, char fill, char unfi
 	clamp(&x);
 
 	// round to nearest int
-	const size_t num_unfilled = meter_width - (size_t)(x * meter_width + 0.5);
+	const size_t num_filled = (size_t)(x * meter_width + 0.5);
+	const size_t num_unfilled = meter_width - num_filled;
 
 	for (i = 0; i < num_unfilled; ++i)
 	{
