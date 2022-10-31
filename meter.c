@@ -146,7 +146,7 @@ my_fmod(double x, double y)
 }
 
 static void
-clamp(double *x)
+clamp(double* x)
 {
 	if (*x < 0)
 		*x = 0;
@@ -173,7 +173,7 @@ map_to_uint(double x, size_t b)
  */
 static void
 calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
-                    size_t *left_width, size_t *blocks_index, size_t *right_width)
+                    size_t* left_width, size_t* blocks_index, size_t* right_width)
 {
 	*left_width = 0;
 	*blocks_index = -1;
@@ -236,7 +236,7 @@ upper_blocks_1(double x)
  * It is the caller's responsibility to null-terminate the meter buffer.
  */
 void
-left_blocks_meter(double x, wchar_t *meter, size_t meter_width)
+left_blocks_meter(double x, wchar_t* meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
@@ -247,20 +247,24 @@ left_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 	                    &left_width, &blocks_index, &right_width);
 
 	for (i = 0; i < left_width; ++i)
+	{
 		*meter++ = FULL_BLOCK;
+	}
 
 	if (blocks_index != (size_t)-1)
 		*meter++ = left_blocks[blocks_index];
 
 	for (i = 0; i < right_width; ++i)
+	{
 		*meter++ = SPACE;
+	}
 }
 
 /* Fill a meter with a Unicode vertical 1/8 block character.
  * The position of the filled character is proportional to x, starting at the left.
  */
 void
-ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
+ver_lines_meter(double x, wchar_t* meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
@@ -270,22 +274,31 @@ ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
 	calc_meter_segments(x, meter_width, num_ver_lines,
 	                    &left_width, &blocks_index, &right_width);
 
-	if (left_width == meter_width) {
+	if (left_width == meter_width)
+	{
 		// Special case when the vertical line will be at the right end
 
 		for (i = 1; i < left_width; ++i)
+		{
 			*meter++ = SPACE;
+		}
 
 		*meter++ = RIGHT_ONE_EIGHTH_BLOCK;
-	} else {
+	}
+	else
+	{
 		for (i = 0; i < left_width; ++i)
+		{
 			*meter++ = SPACE;
+		}
 
 		if (blocks_index != (size_t)-1)
 			*meter++ = ver_lines[blocks_index];
 
 		for (i = 0; i < right_width; ++i)
+		{
 			*meter++ = SPACE;
+		}
 	}
 }
 
@@ -293,7 +306,7 @@ ver_lines_meter(double x, wchar_t *meter, size_t meter_width)
  * The filled region is proportional to x, starting at the right.
  */
 void
-right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
+right_blocks_meter(double x, wchar_t* meter, size_t meter_width)
 {
 	size_t left_width, blocks_index, right_width, i;
 
@@ -306,13 +319,17 @@ right_blocks_meter(double x, wchar_t *meter, size_t meter_width)
 	// left_width and right_width are swapped
 
 	for (i = 0; i < right_width; ++i)
+	{
 		*meter++ = SPACE;
+	}
 
 	if (blocks_index != (size_t)-1)
 		*meter++ = right_blocks[blocks_index];
 
 	for (i = 0; i < left_width; ++i)
+	{
 		*meter++ = FULL_BLOCK;
+	}
 }
 
 /* Fill a meter with ASCII characters.
@@ -339,9 +356,13 @@ left_char_meter(double x, char* meter, size_t meter_width, char fill, char unfil
 	const size_t num_filled = (size_t)(x * meter_width + 0.5);
 
 	for (i = 0; i < num_filled; ++i)
+	{
 		meter[i] = fill;
+	}
 	for (; i < meter_width; ++i)
+	{
 		meter[i] = unfill;
+	}
 }
 
 /* Fill a meter with ASCII characters.
@@ -361,7 +382,11 @@ right_char_meter(double x, char* meter, size_t meter_width, char fill, char unfi
 	const size_t num_unfilled = meter_width - (size_t)(x * meter_width + 0.5);
 
 	for (i = 0; i < num_unfilled; ++i)
+	{
 		meter[i] = unfill;
+	}
 	for (; i < meter_width; ++i)
+	{
 		meter[i] = fill;
+	}
 }
