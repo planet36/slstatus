@@ -139,12 +139,6 @@ static const wchar_t right_blocks[] = {
 
 static const size_t num_right_blocks = LEN(right_blocks);
 
-static double
-my_fmod(double x, double y)
-{
-	return x - (intmax_t)(x / y) * y;
-}
-
 static void
 clamp(double* x)
 {
@@ -197,12 +191,13 @@ calc_meter_segments(double x, size_t meter_width, size_t blocks_len,
 	if (*left_width == meter_width)
 		return;
 
-	/* Using "blocks_len - 1" instead of "blocks_len" in the calculations
-	 * produces a preferred distribution at the ends of the meter.
-	 */
-	// *blocks_index = (size_t)my_fmod(x * meter_width * blocks_len, blocks_len);
-	*blocks_index = (size_t)(my_fmod(x * meter_width * (blocks_len - 1U),
-	                              blocks_len - 1U) + 0.5);
+	const double frac = x * meter_width - (double)((size_t)(x * meter_width));
+	// This produces a preferred distribution at the ends of the meter.
+	// round to nearest int
+	*blocks_index = (size_t)(frac * (blocks_len - 1U) + 0.5);
+	// Use this to get an alternative distribution.
+	// truncate
+	//*blocks_index = (size_t)(frac * blocks_len);
 
 	*right_width = meter_width - *left_width - 1U;
 }
