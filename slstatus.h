@@ -14,6 +14,9 @@ const char *clocktime(const char *unused);
 /* counter */
 const char *counter(const char *unused);
 
+/* cat */
+const char *cat(const char *path);
+
 /* cpu */
 const char *cpu_cmeter(const char *unused);
 const char *cpu_freq(const char *unused);
