@@ -30,9 +30,6 @@ static const char unknown_str[] = "n/a";
  * cpu_meter           cpu usage meter, unicode        NULL
  * cpu_perc            cpu usage in percent            NULL
  * datetime            date and time                   format string (%F %T)
- * datetimetz          date and time                   format string prefixed
- *                                                     with timezone
- *                                                     (TZ=UTC %F %T)
  * disk_free           free disk space in <SI>B        mountpoint path (/)
  * disk_meter          disk usage meter, unicode       mountpoint path (/)
  * disk_perc           disk usage in percent           mountpoint path (/)
