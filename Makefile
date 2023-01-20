@@ -44,7 +44,7 @@ uninstall:
 		"$(DESTDIR)$(MANDIR)/man1/$(BIN).1"
 
 lint:
-	clang-tidy --quiet $(SRCS) -- $(CPPFLAGS) $(CFLAGS) $(LDLIBS)
+	-clang-tidy --quiet $(SRCS) -- $(CPPFLAGS) $(CFLAGS) $(LDLIBS)
 
 .PHONY: options clean dist install uninstall lint
 
