@@ -148,7 +148,8 @@ pscanf(const char* path, const char* fmt, ...)
 	va_list ap;
 	int n;
 
-	if (!(fp = fopen(path, "r")))
+	fp = fopen(path, "r");
+	if (fp == NULL)
 	{
 		warn("fopen '%s'", path);
 		return -1;
@@ -156,7 +157,8 @@ pscanf(const char* path, const char* fmt, ...)
 	va_start(ap, fmt);
 	n = vfscanf(fp, fmt, ap);
 	va_end(ap);
-	(void)fclose(fp);
+	if (fclose(fp) < 0)
+		die("fclose:");
 
 	return (n == EOF) ? -1 : n;
 }

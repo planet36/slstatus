@@ -37,17 +37,20 @@
 		              interface) < 0) {
 			return NULL;
 		}
-		if (!(fp = fopen(path, "r"))) {
+		fp = fopen(path, "r");
+		if (fp == NULL) {
 			warn("fopen '%s'", path);
 			return NULL;
 		}
 		p = fgets(status, 5, fp);
-		(void)fclose(fp);
+		if (fclose(fp) < 0)
+			die("fclose:");
 		if (!p || strcmp(status, "up\n") != 0) {
 			return NULL;
 		}
 
-		if (!(fp = fopen("/proc/net/wireless", "r"))) {
+		fp = fopen("/proc/net/wireless", "r");
+		if (fp == NULL) {
 			warn("fopen '/proc/net/wireless'");
 			return NULL;
 		}
@@ -56,7 +59,8 @@
 			if (!(p = fgets(buf, sizeof(buf) - 1, fp)))
 				break;
 		}
-		(void)fclose(fp);
+		if (fclose(fp) < 0)
+			die("fclose:");
 		if (i < 2 || !p) {
 			return NULL;
 		}
