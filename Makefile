@@ -12,9 +12,6 @@ BIN = slstatus
 $(BIN): $(OBJS)
 	$(CC) $^ -o $@ $(LDLIBS)
 
-%.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
-
 $(OBJS): config.mk
 
 options:
