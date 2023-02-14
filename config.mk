@@ -15,7 +15,7 @@ LIBS = `pkg-config --libs   x11`
 
 # flags
 CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(INCS)
-DEPFLAGS += -MMD -MP
+CPPFLAGS += -MMD -MP
 CFLAGS += -O2 \
 		-std=c2x
 LDLIBS += $(LIBS)

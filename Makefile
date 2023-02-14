@@ -13,15 +13,15 @@ $(BIN): $(OBJS)
 	$(CC) $^ -o $@ $(LDLIBS)
 
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(DEPFLAGS) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(OBJS): config.mk
 
 options:
 	@echo $(BIN) build options:
 	@echo "CPPFLAGS = $(CPPFLAGS)"
-	@echo "DEPFLAGS = $(DEPFLAGS)"
 	@echo "CFLAGS  = $(CFLAGS)"
+	@echo "LDFLAGS = $(LDFLAGS)"
 	@echo "LDLIBS  = $(LDLIBS)"
 	@echo "CC      = $(CC)"
 
