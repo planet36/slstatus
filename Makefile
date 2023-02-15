@@ -23,7 +23,7 @@ options:
 	@echo "CC      = $(CC)"
 
 clean:
-	@$(RM) --verbose -- $(BIN) $(OBJS) $(DEPS) $(BIN)-$(VERSION).tar.xz
+	@$(RM) --verbose -- $(DEPS) $(OBJS) $(BIN) $(BIN)-$(VERSION).tar.xz
 
 dist:
 	git archive --prefix $(BIN)-$(VERSION)/ HEAD | xz > $(BIN)-$(VERSION).tar.xz
