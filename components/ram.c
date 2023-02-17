@@ -90,9 +90,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 
 		size = sizeof(uvmexp);
 
-		if (sysctl(uvmexp_mib, LEN(uvmexp_mib), &uvmexp, &size, NULL, 0) < 0) {
+		if (sysctl(uvmexp_mib, LEN(uvmexp_mib), &uvmexp, &size, NULL, 0) < 0)
 			return NULL;
-		}
 
 		// TODO: maybe add this: uvmexp.inactive
 		// TODO: maybe use this: uvmexp.npages - uvmexp.active
@@ -143,9 +142,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 const char *
 ram_free([[maybe_unused]] const char *unused)
 {
-	if (update_mem_info() < 0) {
+	if (update_mem_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(free_bytes, 1024);
 }
@@ -164,9 +162,8 @@ ram_hist([[maybe_unused]] const char *unused)
 		initialized = 1;
 	}
 
-	if (update_mem_info() < 0 || total_bytes == 0) {
+	if (update_mem_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -184,9 +181,8 @@ ram_meter([[maybe_unused]] const char *unused)
 	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
-	if (update_mem_info() < 0 || total_bytes == 0) {
+	if (update_mem_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -200,9 +196,8 @@ ram_perc([[maybe_unused]] const char *unused)
 {
 	double used;
 
-	if (update_mem_info() < 0 || total_bytes == 0) {
+	if (update_mem_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -217,9 +212,8 @@ ram_perc([[maybe_unused]] const char *unused)
 const char *
 ram_total([[maybe_unused]] const char *unused)
 {
-	if (update_mem_info() < 0) {
+	if (update_mem_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(total_bytes, 1024);
 }
@@ -227,9 +221,8 @@ ram_total([[maybe_unused]] const char *unused)
 const char *
 ram_used([[maybe_unused]] const char *unused)
 {
-	if (update_mem_info() < 0) {
+	if (update_mem_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(used_bytes, 1024);
 }

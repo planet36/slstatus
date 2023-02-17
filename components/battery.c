@@ -33,14 +33,12 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 	     size_t length)
 	{
 		if (esnprintf(path, length, f1, bat) > 0 &&
-		    access(path, R_OK) == 0) {
+		    access(path, R_OK) == 0)
 			return f1;
-		}
 
 		if (esnprintf(path, length, f2, bat) > 0 &&
-		    access(path, R_OK) == 0) {
+		    access(path, R_OK) == 0)
 			return f2;
-		}
 
 		return NULL;
 	}
@@ -52,13 +50,10 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		char path[PATH_MAX];
 		wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
-		if (esnprintf(path, sizeof(path),
-		              POWER_SUPPLY_CAPACITY, bat) < 0) {
+		if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0)
 			return NULL;
-		}
-		if (pscanf(path, "%d", &cap_perc) != 1) {
+		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
-		}
 
 		left_blocks_meter(cap_perc / 100.0, meter, METER_WIDTH);
 
@@ -71,13 +66,10 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		int cap_perc;
 		char path[PATH_MAX];
 
-		if (esnprintf(path, sizeof(path),
-		              POWER_SUPPLY_CAPACITY, bat) < 0) {
+		if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0)
 			return NULL;
-		}
-		if (pscanf(path, "%d", &cap_perc) != 1) {
+		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
-		}
 
 #ifdef MAX_PCT_99
 		if (cap_perc > 99)
@@ -102,19 +94,16 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size_t i;
 		char path[PATH_MAX], state[12];
 
-		if (esnprintf(path, sizeof(path),
-		              POWER_SUPPLY_STATUS, bat) < 0) {
+		if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
 			return NULL;
-		}
-		if (pscanf(path, "%12[a-zA-Z ]", state) != 1) {
+		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
 			return NULL;
-		}
 
 		for (i = 0; i < LEN(map); i++) {
-			if (!strcmp(map[i].state, state)) {
+			if (!strcmp(map[i].state, state))
 				break;
-			}
 		}
+
 		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
 
@@ -125,32 +114,24 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		double timeleft;
 		char path[PATH_MAX], state[12];
 
-		if (esnprintf(path, sizeof(path),
-		              POWER_SUPPLY_STATUS, bat) < 0) {
+		if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
 			return NULL;
-		}
-		if (pscanf(path, "%12[a-zA-Z ]", state) != 1) {
+		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
 			return NULL;
-		}
 
-		if (!pick(bat, POWER_SUPPLY_CHARGE,
-		          POWER_SUPPLY_ENERGY, path,
+		if (!pick(bat, POWER_SUPPLY_CHARGE, POWER_SUPPLY_ENERGY, path,
 		          sizeof(path)) ||
-		    pscanf(path, "%ju", &charge_now) != 1) {
+		    pscanf(path, "%ju", &charge_now) != 1)
 			return NULL;
-		}
 
 		if (!strcmp(state, "Discharging")) {
-			if (!pick(bat, POWER_SUPPLY_CURRENT,
-			          POWER_SUPPLY_POWER, path,
+			if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
 			          sizeof(path)) ||
-			    pscanf(path, "%ju", &current_now) != 1) {
+			    pscanf(path, "%ju", &current_now) != 1)
 				return NULL;
-			}
 
-			if (current_now == 0) {
+			if (current_now == 0)
 				return NULL;
-			}
 
 			timeleft = (double)charge_now / current_now;
 			h = timeleft;
@@ -196,9 +177,8 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		struct apm_power_info apm_info;
 		wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
-		if (load_apm_power_info(&apm_info) < 0) {
+		if (load_apm_power_info(&apm_info) < 0)
 			return NULL;
-		}
 
 		left_blocks_meter(apm_info.battery_life / 100.0, meter, METER_WIDTH);
 
@@ -211,9 +191,8 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		int cap_perc;
 		struct apm_power_info apm_info;
 
-		if (load_apm_power_info(&apm_info) < 0) {
+		if (load_apm_power_info(&apm_info) < 0)
 			return NULL;
-		}
 
 		cap_perc = apm_info.battery_life;
 
@@ -238,14 +217,12 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		struct apm_power_info apm_info;
 		size_t i;
 
-		if (load_apm_power_info(&apm_info)) {
+		if (load_apm_power_info(&apm_info))
 			return NULL;
-		}
 
 		for (i = 0; i < LEN(map); i++) {
-			if (map[i].state == apm_info.ac_state) {
+			if (map[i].state == apm_info.ac_state)
 				break;
-			}
 		}
 		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
@@ -256,9 +233,8 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		struct apm_power_info apm_info;
 		unsigned int h, m;
 
-		if (load_apm_power_info(&apm_info) < 0) {
+		if (load_apm_power_info(&apm_info) < 0)
 			return NULL;
-		}
 
 		if (apm_info.ac_state != APM_AC_ON) {
 				h = apm_info.minutes_left / 60;
@@ -283,8 +259,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
 		len = sizeof(cap_perc);
-		if (sysctlbyname(BATTERY_LIFE, &cap_perc, &len, NULL, 0) < 0
-				|| !len)
+		if (sysctlbyname(BATTERY_LIFE, &cap_perc, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		left_blocks_meter(cap_perc / 100.0, meter, METER_WIDTH);
@@ -299,8 +274,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size_t len;
 
 		len = sizeof(cap_perc);
-		if (sysctlbyname(BATTERY_LIFE, &cap_perc, &len, NULL, 0) < 0
-				|| !len)
+		if (sysctlbyname(BATTERY_LIFE, &cap_perc, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 #ifdef MAX_PCT_99
@@ -318,8 +292,7 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size_t len;
 
 		len = sizeof(state);
-		if (sysctlbyname(BATTERY_STATE, &state, &len, NULL, 0) < 0
-				|| !len)
+		if (sysctlbyname(BATTERY_STATE, &state, &len, NULL, 0) < 0 || !len)
 			return NULL;
 
 		switch (state) {
@@ -340,9 +313,8 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		size_t len;
 
 		len = sizeof(rem);
-		if (sysctlbyname(BATTERY_TIME, &rem, &len, NULL, 0) < 0
-				|| !len
-				|| rem == -1)
+		if (sysctlbyname(BATTERY_TIME, &rem, &len, NULL, 0) < 0 || !len
+		    || rem < 0)
 			return NULL;
 
 		return bprintf("%uh %02um", rem / 60, rem % 60);

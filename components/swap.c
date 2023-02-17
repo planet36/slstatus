@@ -135,9 +135,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 			return -1;
 		}
 
-		if (kvm_close(kd) < 0) {
+		if (kvm_close(kd) < 0)
 			return -1;
-		}
 
 		total_bytes = swap_info[0].ksw_total * getpagesize();
 		used_bytes = swap_info[0].ksw_used * getpagesize();
@@ -150,9 +149,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 const char *
 swap_free([[maybe_unused]] const char *unused)
 {
-	if (update_swap_info() < 0) {
+	if (update_swap_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(free_bytes, 1024);
 }
@@ -171,9 +169,8 @@ swap_hist([[maybe_unused]] const char *unused)
 		initialized = 1;
 	}
 
-	if (update_swap_info() < 0 || total_bytes == 0) {
+	if (update_swap_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -191,9 +188,8 @@ swap_meter([[maybe_unused]] const char *unused)
 	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
-	if (update_swap_info() < 0 || total_bytes == 0) {
+	if (update_swap_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -207,9 +203,8 @@ swap_perc([[maybe_unused]] const char *unused)
 {
 	double used;
 
-	if (update_swap_info() < 0 || total_bytes == 0) {
+	if (update_swap_info() < 0 || total_bytes == 0)
 		return NULL;
-	}
 
 	used = (double)used_bytes / total_bytes;
 
@@ -224,9 +219,8 @@ swap_perc([[maybe_unused]] const char *unused)
 const char *
 swap_total([[maybe_unused]] const char *unused)
 {
-	if (update_swap_info() < 0) {
+	if (update_swap_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(total_bytes, 1024);
 }
@@ -234,9 +228,8 @@ swap_total([[maybe_unused]] const char *unused)
 const char *
 swap_used([[maybe_unused]] const char *unused)
 {
-	if (update_swap_info() < 0) {
+	if (update_swap_info() < 0)
 		return NULL;
-	}
 
 	return fmt_human_3(used_bytes, 1024);
 }

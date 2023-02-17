@@ -35,10 +35,8 @@
 		FILE *fp;
 		double pct;
 
-		if (esnprintf(path, sizeof(path), NET_OPERSTATE,
-		              interface) < 0) {
+		if (esnprintf(path, sizeof(path), NET_OPERSTATE, interface) < 0)
 			return NULL;
-		}
 		fp = fopen(path, "r");
 		if (fp == NULL) {
 			warn("fopen '%s'", path);
@@ -47,9 +45,8 @@
 		p = fgets(status, 5, fp);
 		if (fclose(fp) < 0)
 			die("fclose:");
-		if (!p || strcmp(status, "up\n") != 0) {
+		if (!p || strcmp(status, "up\n") != 0)
 			return NULL;
-		}
 
 		fp = fopen("/proc/net/wireless", "r");
 		if (fp == NULL) {
@@ -57,19 +54,17 @@
 			return NULL;
 		}
 
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 3; i++)
 			if (!(p = fgets(buf, sizeof(buf) - 1, fp)))
 				break;
-		}
+
 		if (fclose(fp) < 0)
 			die("fclose:");
-		if (i < 2 || !p) {
+		if (i < 2 || !p)
 			return NULL;
-		}
 
-		if (!(datastart = strstr(buf, interface))) {
+		if (!(datastart = strstr(buf, interface)))
 			return NULL;
-		}
 
 		datastart = (datastart+(strlen(interface)+1));
 		(void)sscanf(datastart + 1, " %*d   %d  %*d  %*d\t\t  %*d\t   "
@@ -96,9 +91,8 @@
 		memset(&wreq, 0, sizeof(struct iwreq));
 		wreq.u.essid.length = IW_ESSID_MAX_SIZE+1;
 		if (esnprintf(wreq.ifr_name, sizeof(wreq.ifr_name), "%s",
-		              interface) < 0) {
+		              interface) < 0)
 			return NULL;
-		}
 
 		if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 			warn("socket 'AF_INET'");
@@ -113,9 +107,8 @@
 
 		close(sockfd);
 
-		if (id[0] == '\0') {
+		if (id[0] == '\0')
 			return NULL;
-		}
 
 		return id;
 	}
@@ -175,11 +168,10 @@
 			return NULL;
 		}
 
-		if (nr.nr_max_rssi) {
+		if (nr.nr_max_rssi)
 			pct = IEEE80211_NODEREQ_RSSI(&nr);
-		} else {
+		else
 			pct = RSSI_TO_PERC(nr.nr_rssi);
-		}
 
 #ifdef MAX_PCT_99
 		if (pct > 99)
@@ -194,9 +186,8 @@
 	{
 		struct ieee80211_nodereq nr;
 
-		if (load_ieee80211_nodereq(interface, &nr) < 0) {
+		if (load_ieee80211_nodereq(interface, &nr) < 0)
 			return NULL;
-		}
 
 		return bprintf("%s", nr.nr_nwid);
 	}

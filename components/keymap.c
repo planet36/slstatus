@@ -17,9 +17,8 @@ valid_layout_or_variant(char *sym)
 	static const char *invalid[] = { "evdev", "inet", "pc", "base" };
 
 	for (i = 0; i < LEN(invalid); i++) {
-		if (!strncmp(sym, invalid[i], strlen(invalid[i]))) {
+		if (!strncmp(sym, invalid[i], strlen(invalid[i])))
 			return 0;
-		}
 	}
 
 	return 1;

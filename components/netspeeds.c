@@ -16,14 +16,10 @@ extern double delta_time; // seconds
 	{
 		char path[PATH_MAX];
 
-		if (esnprintf(path, sizeof(path),
-		              NET_RX_BYTES,
-		              interface) < 0) {
+		if (esnprintf(path, sizeof(path), NET_RX_BYTES, interface) < 0)
 			return -1;
-		}
-		if (pscanf(path, "%ju", rxbytes) != 1) {
+		if (pscanf(path, "%ju", rxbytes) != 1)
 			return -1;
-		}
 
 		return 0;
 	}
@@ -33,14 +29,10 @@ extern double delta_time; // seconds
 	{
 		char path[PATH_MAX];
 
-		if (esnprintf(path, sizeof(path),
-		              NET_TX_BYTES,
-		              interface) < 0) {
+		if (esnprintf(path, sizeof(path), NET_TX_BYTES, interface) < 0)
 			return -1;
-		}
-		if (pscanf(path, "%ju", txbytes) != 1) {
+		if (pscanf(path, "%ju", txbytes) != 1)
 			return -1;
-		}
 
 		return 0;
 	}
@@ -66,9 +58,8 @@ extern double delta_time; // seconds
 		*rxbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
-			   (ifd = (struct if_data *)ifa->ifa_data)) {
+			   (ifd = (struct if_data *)ifa->ifa_data))
 				*rxbytes += ifd->ifi_ibytes, if_ok = 1;
-			}
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
@@ -93,9 +84,8 @@ extern double delta_time; // seconds
 		*txbytes = 0;
 		for (ifa = ifal; ifa; ifa = ifa->ifa_next) {
 			if (!strcmp(ifa->ifa_name, interface) &&
-			   (ifd = (struct if_data *)ifa->ifa_data)) {
+			   (ifd = (struct if_data *)ifa->ifa_data))
 				*txbytes += ifd->ifi_obytes, if_ok = 1;
-			}
 		}
 		freeifaddrs(ifal);
 		if (!if_ok) {
@@ -113,9 +103,8 @@ netspeed_rx(const char *interface)
 	static uintmax_t rxbytes;
 	const uintmax_t oldrxbytes = rxbytes;
 
-	if (calc_rxbytes(interface, &rxbytes) < 0 || oldrxbytes == 0) {
+	if (calc_rxbytes(interface, &rxbytes) < 0 || oldrxbytes == 0)
 		return NULL;
-	}
 
 	return fmt_human_3((rxbytes - oldrxbytes) / delta_time, 1024);
 }
@@ -126,9 +115,8 @@ netspeed_tx(const char *interface)
 	static uintmax_t txbytes;
 	const uintmax_t oldtxbytes = txbytes;
 
-	if (calc_txbytes(interface, &txbytes) < 0 || oldtxbytes == 0) {
+	if (calc_txbytes(interface, &txbytes) < 0 || oldtxbytes == 0)
 		return NULL;
-	}
 
 	return fmt_human_3((txbytes - oldtxbytes) / delta_time, 1024);
 }

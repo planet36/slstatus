@@ -107,9 +107,8 @@ main(int argc, char *argv[])
 	sigaction(SIGALRM, &act, NULL);
 	sigaction(SIGUSR1, &act, NULL);
 
-	if (!sflag && !(dpy = XOpenDisplay(NULL))) {
+	if (!sflag && !(dpy = XOpenDisplay(NULL)))
 		die("XOpenDisplay: Failed to open display");
-	}
 
 	sigemptyset(&waitmask);
 	sigfillset(&newmask);
@@ -123,22 +122,22 @@ main(int argc, char *argv[])
 			reset_alarm = 0;
 		}
 
-		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0) {
+		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
 			die("clock_gettime:");
-		}
+
 		now_time = timespec_to_sec(&start);
 		delta_time = now_time - prev_time;
 		prev_time = now_time;
 
 		status[0] = '\0';
 		for (i = len = 0; i < LEN(components); i++) {
-			if (!(res = components[i].func(components[i].args))) {
+			if (!(res = components[i].func(components[i].args)))
 				res = unknown_str;
-			}
+
 			if ((ret = esnprintf(status + len, sizeof(status) - len,
-			                    components[i].fmt, res)) < 0) {
+			                    components[i].fmt, res)) < 0)
 				break;
-			}
+
 			len += ret;
 		}
 
@@ -148,10 +147,8 @@ main(int argc, char *argv[])
 			if (ferror(stdout))
 				die("puts:");
 		} else {
-			if (XStoreName(dpy, DefaultRootWindow(dpy), status)
-                            < 0) {
+			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0)
 				die("XStoreName: Allocation failed");
-			}
 			XFlush(dpy);
 		}
 
@@ -164,9 +161,8 @@ main(int argc, char *argv[])
 
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
-		if (XCloseDisplay(dpy) < 0) {
+		if (XCloseDisplay(dpy) < 0)
 			die("XCloseDisplay: Failed to close display");
-		}
 	}
 
 	return 0;

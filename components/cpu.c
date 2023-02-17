@@ -29,10 +29,8 @@ static const char unfill = ' ';
 		uintmax_t tmp_freq;
 
 		/* in kHz */
-		if (pscanf(CPU_FREQ,
-		           "%ju", &tmp_freq) != 1) {
+		if (pscanf(CPU_FREQ, "%ju", &tmp_freq) != 1)
 			return -1;
-		}
 
 		*freq = tmp_freq * 1000ULL; // KHz to Hz
 
@@ -46,9 +44,8 @@ static const char unfill = ' ';
 
 		/* cpu user nice system idle iowait irq softirq */
 		if (pscanf("/proc/stat", "%*s %ju %ju %ju %ju %*s %ju %ju",
-		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5]) != 6) {
+		           &a[0], &a[1], &a[2], &a[3], &a[4], &a[5]) != 6)
 			return -1;
-		}
 
 		*idle = a[3];
 		*sum = a[0] + a[1] + a[2] + a[3] + a[4] + a[5];
@@ -160,13 +157,11 @@ cpu_cmeter([[maybe_unused]] const char *unused)
 	double used;
 	char meter[METER_WIDTH + 1] = {'\0'};
 
-	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0)
 		return NULL;
-	}
 
-	if (sum - oldsum == 0) {
+	if (sum - oldsum == 0)
 		return NULL;
-	}
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
@@ -205,13 +200,11 @@ cpu_hist([[maybe_unused]] const char *unused)
 		initialized = 1;
 	}
 
-	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0)
 		return NULL;
-	}
 
-	if (sum - oldsum == 0) {
+	if (sum - oldsum == 0)
 		return NULL;
-	}
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
@@ -233,13 +226,11 @@ cpu_meter([[maybe_unused]] const char *unused)
 	double used;
 	wchar_t meter[METER_WIDTH + 1] = {'\0'};
 
-	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0)
 		return NULL;
-	}
 
-	if (sum - oldsum == 0) {
+	if (sum - oldsum == 0)
 		return NULL;
-	}
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 
@@ -257,13 +248,11 @@ cpu_perc([[maybe_unused]] const char *unused)
 	uintmax_t oldsum = sum;
 	double used;
 
-	if (calc_idle(&idle, &sum) < 0 || oldidle == 0) {
+	if (calc_idle(&idle, &sum) < 0 || oldidle == 0)
 		return NULL;
-	}
 
-	if (sum - oldsum == 0) {
+	if (sum - oldsum == 0)
 		return NULL;
-	}
 
 	used = 1 - (double)(idle - oldidle) / (sum - oldsum);
 

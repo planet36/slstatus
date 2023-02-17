@@ -14,10 +14,8 @@
 	{
 		uintmax_t num;
 
-		if (pscanf(ENTROPY_AVAIL, "%ju", &num)
-		    != 1) {
+		if (pscanf(ENTROPY_AVAIL, "%ju", &num) != 1)
 			return NULL;
-		}
 
 		return bprintf("%ju", num);
 	}
