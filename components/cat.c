@@ -12,7 +12,8 @@ cat(const char *path)
 	char *f;
 	FILE *fp;
 
-	if (!(fp = fopen(path, "r"))) {
+	fp = fopen(path, "r");
+	if (fp == NULL) {
 		warn("fopen '%s':", path);
 		return NULL;
 	}
@@ -25,7 +26,8 @@ cat(const char *path)
 	if (!f)
 		return NULL;
 
-	if ((f = strrchr(buf, '\n')))
+	f = strrchr(buf, '\n');
+	if (f != NULL)
 		f[0] = '\0';
 
 	return buf[0] ? buf : NULL;
