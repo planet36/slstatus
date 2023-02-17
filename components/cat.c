@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 
