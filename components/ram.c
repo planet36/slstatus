@@ -62,9 +62,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		              "Slab: %*s kB\n" // discard
 		              "SReclaimable: %ju kB\n",
 		              &memtotal, &memfree, &memavailable, &buffers, &cached,
-		              &sreclaimable) != 6) {
+		              &sreclaimable) != 6)
 			return -1;
-		}
 
 		free_bytes = memavailable * 1024;
 		total_bytes = memtotal * 1024;

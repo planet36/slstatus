@@ -71,7 +71,7 @@
 		       "%*d\t\t%*d\t\t %*d\t  %*d\t\t %*d", &cur);
 
 		/* 70 is the max of /proc/net/wireless */
-		pct = 100.0 * cur / 70;
+		pct = (cur / 70.0) * 100;
 
 #ifdef MAX_PCT_99
 		if (pct > 99.0)

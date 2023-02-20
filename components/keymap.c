@@ -16,10 +16,9 @@ valid_layout_or_variant(char *sym)
 	/* invalid symbols from xkb rules config */
 	static const char *invalid[] = { "evdev", "inet", "pc", "base" };
 
-	for (i = 0; i < LEN(invalid); i++) {
+	for (i = 0; i < LEN(invalid); i++)
 		if (!strncmp(sym, invalid[i], strlen(invalid[i])))
 			return 0;
-	}
 
 	return 1;
 }

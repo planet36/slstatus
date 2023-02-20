@@ -51,9 +51,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		              "Mlocked: %*s kB\n" // discard
 		              "SwapTotal: %ju kB\n"
 		              "SwapFree: %ju kB\n",
-		              &swaptotal, &swapfree) != 2) {
+		              &swaptotal, &swapfree) != 2)
 			return -1;
-		}
 
 		free_bytes = swapfree * 1024;
 		total_bytes = swaptotal * 1024;

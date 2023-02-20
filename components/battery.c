@@ -99,10 +99,9 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
 			return NULL;
 
-		for (i = 0; i < LEN(map); i++) {
+		for (i = 0; i < LEN(map); i++)
 			if (!strcmp(map[i].state, state))
 				break;
-		}
 
 		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
@@ -220,10 +219,10 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		if (load_apm_power_info(&apm_info))
 			return NULL;
 
-		for (i = 0; i < LEN(map); i++) {
+		for (i = 0; i < LEN(map); i++)
 			if (map[i].state == apm_info.ac_state)
 				break;
-		}
+
 		return (i == LEN(map)) ? "?" : map[i].symbol;
 	}
 

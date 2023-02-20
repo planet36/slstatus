@@ -100,9 +100,8 @@ fmt_human(uintmax_t num, int base)
 	}
 
 	scaled = num;
-	for (i = 0; i < prefixlen && scaled >= base; i++) {
+	for (i = 0; i < prefixlen && scaled >= base; i++)
 		scaled /= base;
-	}
 
 	return bprintf("%.1Lf %s", scaled, prefix[i]);
 }
@@ -142,15 +141,14 @@ fmt_human_3(uintmax_t num, int base)
 }
 
 int
-pscanf(const char* path, const char* fmt, ...)
+pscanf(const char *path, const char *fmt, ...)
 {
-	FILE* fp;
+	FILE *fp;
 	va_list ap;
 	int n;
 
 	fp = fopen(path, "r");
-	if (fp == NULL)
-	{
+	if (fp == NULL) {
 		warn("fopen '%s'", path);
 		return -1;
 	}
