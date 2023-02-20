@@ -135,7 +135,7 @@ main(int argc, char *argv[])
 				res = unknown_str;
 
 			if ((ret = esnprintf(status + len, sizeof(status) - len,
-			                    components[i].fmt, res)) < 0)
+			                     components[i].fmt, res)) < 0)
 				break;
 
 			len += ret;
