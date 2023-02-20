@@ -14,16 +14,16 @@ cat(const char *path)
 
 	fp = fopen(path, "r");
 	if (fp == NULL) {
-		warn("fopen '%s':", path);
+		warn("fopen '%s'", path);
 		return NULL;
 	}
 
 	f = fgets(buf, sizeof(buf) - 1, fp);
 	if (fclose(fp) < 0) {
-		warn("fclose '%s':", path);
+		warn("fclose '%s'", path);
 		return NULL;
 	}
-	if (!f)
+	if (f == NULL)
 		return NULL;
 
 	f = strrchr(buf, '\n');
