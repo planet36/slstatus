@@ -27,7 +27,8 @@ num_files(const char *path)
 		num++;
 	}
 
-	closedir(dir);
+	if (closedir(dir) < 0)
+		warn("closedir '%s'", path);
 
 	return bprintf("%d", num);
 }

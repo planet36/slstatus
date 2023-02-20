@@ -208,20 +208,20 @@
 
 		if (ioctl(afd, (int)SOUND_MIXER_READ_DEVMASK, &devmask) < 0) {
 			warn("ioctl 'SOUND_MIXER_READ_DEVMASK'");
-			close(afd);
+			(void)close(afd);
 			return NULL;
 		}
 		for (i = 0; i < LEN(vnames); i++) {
 			if (devmask & (1 << i) && !strcmp("vol", vnames[i])) {
 				if (ioctl(afd, MIXER_READ(i), &v) < 0) {
 					warn("ioctl 'MIXER_READ(%ld)'", i);
-					close(afd);
+					(void)close(afd);
 					return NULL;
 				}
 			}
 		}
 
-		close(afd);
+		(void)close(afd);
 		v &= 0xFF;
 
 #ifdef MAX_PCT_99

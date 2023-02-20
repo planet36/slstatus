@@ -162,11 +162,11 @@ static_assert(METER_WIDTH > 0, "METER_WIDTH must be > 0");
 		memset(apm_info, 0, sizeof(struct apm_power_info));
 		if (ioctl(fd, APM_IOC_GETPOWER, apm_info) < 0) {
 			warn("ioctl 'APM_IOC_GETPOWER'");
-			close(fd);
+			(void)close(fd);
 			return -1;
 		}
 
-		close(fd);
+		(void)close(fd);
 		return 0;
 	}
 

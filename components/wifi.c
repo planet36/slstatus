@@ -101,11 +101,11 @@
 		wreq.u.essid.pointer = id;
 		if (ioctl(sockfd,SIOCGIWESSID, &wreq) < 0) {
 			warn("ioctl 'SIOCGIWESSID'");
-			close(sockfd);
+			(void)close(sockfd);
 			return NULL;
 		}
 
-		close(sockfd);
+		(void)close(sockfd);
 
 		if (id[0] == '\0')
 			return NULL;
@@ -137,24 +137,24 @@
 		strlcpy(bssid.i_name, interface, sizeof(bssid.i_name));
 		if ((ioctl(sockfd, SIOCG80211BSSID, &bssid)) < 0) {
 			warn("ioctl 'SIOCG80211BSSID'");
-			close(sockfd);
+			(void)close(sockfd);
 			return -1;
 		}
 		memset(&zero_bssid, 0, sizeof(zero_bssid));
 		if (memcmp(bssid.i_bssid, zero_bssid,
 		    IEEE80211_ADDR_LEN) == 0) {
-			close(sockfd);
+			(void)close(sockfd);
 			return -1;
 		}
 		strlcpy(nr->nr_ifname, interface, sizeof(nr->nr_ifname));
 		memcpy(&nr->nr_macaddr, bssid.i_bssid, sizeof(nr->nr_macaddr));
 		if ((ioctl(sockfd, SIOCG80211NODE, nr)) < 0 && nr->nr_rssi) {
 			warn("ioctl 'SIOCG80211NODE'");
-			close(sockfd);
+			(void)close(sockfd);
 			return -1;
 		}
 
-		close(sockfd);
+		(void)close(sockfd);
 		return 0;
 	}
 
@@ -236,7 +236,7 @@
 		len = IEEE80211_ADDR_LEN;
 		if (load_ieee80211req(sockfd, interface, &bssid, IEEE80211_IOC_BSSID, &len) < 0)
 		{
-			close(sockfd);
+			(void)close(sockfd);
 			return NULL;
 		}
 
@@ -246,7 +246,7 @@
 
 		len = sizeof(info);
 		if (load_ieee80211req(sockfd, interface, &info, IEEE80211_IOC_STA_INFO, &len) < 0) {
-			close(sockfd);
+			(void)close(sockfd);
 			return NULL;
 		}
 
@@ -260,7 +260,7 @@
 			pct = 99;
 #endif
 
-		close(sockfd);
+		(void)close(sockfd);
 		return bprintf("%d", pct);
 	}
 
@@ -279,7 +279,7 @@
 		len = sizeof(ssid);
 		memset(&ssid, 0, len);
 		if (load_ieee80211req(sockfd, interface, &ssid, IEEE80211_IOC_SSID, &len) < 0) {
-			close(sockfd);
+			(void)close(sockfd);
 			return NULL;
 		}
 
@@ -290,7 +290,7 @@
 
 		ssid[len - 1] = '\0';
 
-		close(sockfd);
+		(void)close(sockfd);
 		return bprintf("%s", ssid);
 	}
 #endif

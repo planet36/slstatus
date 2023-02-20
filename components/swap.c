@@ -130,7 +130,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 
 		if (kvm_getswapinfo(kd, swap_info, LEN(swap_info), 0 /* Unused flags */) < 0) {
 			warn("kvm_getswapinfo");
-			kvm_close(kd);
+			(void)kvm_close(kd);
 			return -1;
 		}
 
