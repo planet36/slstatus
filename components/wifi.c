@@ -42,7 +42,7 @@
 			warn("fopen '%s'", path);
 			return NULL;
 		}
-		p = fgets(status, 5, fp);
+		p = fgets(status, sizeof(status), fp);
 		if (fclose(fp) < 0)
 			die("fclose:");
 		if (!p || strcmp(status, "up\n") != 0)
