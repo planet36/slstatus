@@ -12,7 +12,8 @@ run_command(const char *cmd)
 	char *p;
 	FILE *fp;
 
-	if (!(fp = popen(cmd, "r"))) {
+	fp = popen(cmd, "r");
+	if (fp == NULL) {
 		warn("popen '%s'", cmd);
 		return NULL;
 	}
@@ -22,10 +23,11 @@ run_command(const char *cmd)
 		warn("pclose '%s'", cmd);
 		return NULL;
 	}
-	if (!p)
+	if (p == NULL)
 		return NULL;
 
-	if ((p = strrchr(buf, '\n')))
+	p = strrchr(buf, '\n');
+	if (p != NULL)
 		p[0] = '\0';
 
 	return buf[0] ? buf : NULL;
