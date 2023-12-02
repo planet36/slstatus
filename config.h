@@ -93,6 +93,6 @@ static const struct component components[] = {
 	{ separator   , " ┆ "      , NULL          } ,
 	//{ datetime    , "%s"       , "%a %b %d %T %Z" } ,
 	//{ run_command , "%s"       , "TZ=America/New_York date +\"%a %b %d %T %Z\"" },
-	{ datetime    , "%s"       , "%a %b %d %I:%M" } ,
+	{ datetime    , "%s"       , "%a %b %d %R" } ,
 
 };
