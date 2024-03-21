@@ -1,5 +1,6 @@
 # slstatus version
 VERSION = 1.0
+
 VERSION := $(shell git describe --tags)-planet36
 
 # Customize below to fit your system
