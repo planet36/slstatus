@@ -67,7 +67,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 
 		free_bytes = memavailable * 1024;
 		total_bytes = memtotal * 1024;
-		used_bytes = (memtotal - memfree - (buffers + cached + sreclaimable)) * 1024;
+		used_bytes = total_bytes - free_bytes;
 
 		return 0;
 	}
