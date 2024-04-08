@@ -68,7 +68,7 @@ up(const char *interface)
 	struct ifaddrs *ifaddr, *ifa;
 
 	if (getifaddrs(&ifaddr) < 0) {
-		warn("getifaddrs:");
+		warn("getifaddrs");
 		return NULL;
 	}
 
