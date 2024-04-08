@@ -4,8 +4,8 @@
 
 #include <err.h>
 #include <ifaddrs.h>
-#include <netdb.h>
 #include <net/if.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <string.h>
 #if defined(__OpenBSD__)
