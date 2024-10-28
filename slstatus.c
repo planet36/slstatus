@@ -142,7 +142,7 @@ main(int argc, char *argv[])
 		}
 
 		if (sflag) {
-			puts(status);
+			(void)puts(status);
 			(void)fflush(stdout);
 			if (ferror(stdout))
 				die("puts:");
