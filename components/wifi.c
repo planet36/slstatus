@@ -5,6 +5,7 @@
 #include <err.h>
 #include <ifaddrs.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -44,7 +45,7 @@
 		}
 		p = fgets(status, sizeof(status), fp);
 		if (fclose(fp) < 0)
-			die("fclose:");
+			err(EXIT_FAILURE, "fclose");
 		if (!p || strcmp(status, "up\n") != 0)
 			return NULL;
 
@@ -59,7 +60,7 @@
 				break;
 
 		if (fclose(fp) < 0)
-			die("fclose:");
+			err(EXIT_FAILURE, "fclose");
 		if (i < 2 || !p)
 			return NULL;
 

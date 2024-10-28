@@ -9,8 +9,6 @@ extern char buf[1024];
 
 #define LEN(arr) (sizeof(arr) / sizeof((arr)[0]))
 
-void die(const char *, ...) __attribute__ ((noreturn));
-
 int esnprintf(char *str, size_t size, const char *fmt, ...);
 const char *bprintf(const char *fmt, ...);
 const char *fmt_human(uintmax_t num, int base);

@@ -2,6 +2,7 @@
 #include "slstatus.h"
 #include "util.h"
 
+#include <err.h>
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
@@ -108,7 +109,7 @@ main(int argc, char *argv[])
 	sigaction(SIGUSR1, &act, NULL);
 
 	if (!sflag && !(dpy = XOpenDisplay(NULL)))
-		die("XOpenDisplay: Failed to open display");
+		errx(EXIT_FAILURE, "XOpenDisplay: Failed to open display");
 
 	sigemptyset(&waitmask);
 	sigfillset(&newmask);
@@ -117,13 +118,13 @@ main(int argc, char *argv[])
 	do {
 		if (reset_alarm) {
 			if (setitimer(ITIMER_REAL, &itv, NULL) < 0) {
-				die("setitimer:");
+				err(EXIT_FAILURE, "setitimer");
 			}
 			reset_alarm = 0;
 		}
 
 		if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
-			die("clock_gettime:");
+			err(EXIT_FAILURE, "clock_gettime");
 
 		now_time = timespec_to_sec(&start);
 		delta_time = now_time - prev_time;
@@ -145,10 +146,10 @@ main(int argc, char *argv[])
 			(void)puts(status);
 			(void)fflush(stdout);
 			if (ferror(stdout))
-				die("puts:");
+				err(EXIT_FAILURE, "puts");
 		} else {
 			if (XStoreName(dpy, DefaultRootWindow(dpy), status) < 0)
-				die("XStoreName: Allocation failed");
+				errx(EXIT_FAILURE, "XStoreName: Allocation failed");
 			XFlush(dpy);
 		}
 
@@ -162,7 +163,7 @@ main(int argc, char *argv[])
 	if (!sflag) {
 		XStoreName(dpy, DefaultRootWindow(dpy), NULL);
 		if (XCloseDisplay(dpy) < 0)
-			die("XCloseDisplay: Failed to close display");
+			errx(EXIT_FAILURE, "XCloseDisplay: Failed to close display");
 	}
 
 	return 0;

@@ -15,25 +15,6 @@ static const char *prefix_1000[] = { "", "k", "M", "G", "T", "P", "E", "Z",
 static const char *prefix_1024[] = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei",
                                      "Zi", "Yi" };
 
-void
-die(const char *fmt, ...)
-{
-	va_list ap;
-
-	va_start(ap, fmt);
-	(void)vfprintf(stderr, fmt, ap);
-	va_end(ap);
-
-	if (fmt[0] && fmt[strlen(fmt)-1] == ':') {
-		(void)fputc(' ', stderr);
-		perror(NULL);
-	} else {
-		(void)fputc('\n', stderr);
-	}
-
-	exit(1);
-}
-
 static int
 evsnprintf(char *str, size_t size, const char *fmt, va_list ap)
 {
@@ -156,7 +137,7 @@ pscanf(const char *path, const char *fmt, ...)
 	n = vfscanf(fp, fmt, ap);
 	va_end(ap);
 	if (fclose(fp) < 0)
-		die("fclose:");
+		err(EXIT_FAILURE, "fclose");
 
 	return (n == EOF) ? -1 : n;
 }
