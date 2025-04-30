@@ -1,5 +1,5 @@
 # slstatus version
-VERSION = 1.0
+VERSION = 1.1
 
 VERSION := $(shell git describe --tags --abbrev=0)-planet36
 
