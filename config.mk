@@ -20,7 +20,7 @@ CPPFLAGS += -DVERSION=\"$(VERSION)\" -D_DEFAULT_SOURCE $(INCS)
 
 CFLAGS = -std=c23
 CFLAGS += -pipe -Wall -Wextra -Wpedantic -Wfatal-errors
-CFLAGS += -O3 -flto=auto -march=native -fno-math-errno
+CFLAGS += -O3 -flto=auto -march=native
 
 LDLIBS = $(LIBS)
 # OpenBSD: add -lsndio
