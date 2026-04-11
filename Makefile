@@ -43,6 +43,7 @@ uninstall:
 lint:
 	-clang-tidy --quiet $(SRCS) -- $(CPPFLAGS) $(CFLAGS)
 
+# https://www.gnu.org/software/make/manual/make.html#Phony-Targets
 .PHONY: options clean dist install uninstall lint
 
 -include $(DEPS)
