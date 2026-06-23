@@ -220,17 +220,14 @@
 					(void)close(afd);
 					return NULL;
 				}
+				close(afd);
+				return bprintf("%d", v & 0xff);
 			}
 		}
 
 		(void)close(afd);
-		v &= 0xFF;
+		warn("vol_perc: no 'vol' mixer device");
 
-#ifdef MAX_PCT_99
-		if (v > 99)
-			v = 99;
-#endif
-
-		return bprintf("%d", v);
+		return NULL;
 	}
 #endif
