@@ -74,7 +74,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		int rnswap, nswap, i;
 
 		if ((nswap = swapctl(SWAP_NSWAP, 0, 0)) < 1) {
-			warn("swaptctl 'SWAP_NSWAP'");
+			warn("swapctl 'SWAP_NSWAP'");
 			return -1;
 		}
 		if (!(fsep = sep = calloc(nswap, sizeof(*sep)))) {
@@ -82,7 +82,7 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 			return -1;
 		}
 		if ((rnswap = swapctl(SWAP_STATS, (void *)sep, nswap)) < 0) {
-			warn("swapctl 'SWAP_STATA'");
+			warn("swapctl 'SWAP_STATS'");
 			free(fsep);
 			return -1;
 		}
@@ -96,8 +96,8 @@ static uintmax_t free_bytes, total_bytes, used_bytes;
 		used_bytes = 0;
 
 		for (i = 0; i < rnswap; i++) {
-			total_bytes += sep->se_nblks >> 1;
-			used_bytes += sep->se_inuse >> 1;
+			total_bytes += sep[i].se_nblks >> 1;
+			used_bytes += sep[i].se_inuse >> 1;
 		}
 
 		total_bytes *= 1024;
