@@ -220,7 +220,7 @@
 					(void)close(afd);
 					return NULL;
 				}
-				close(afd);
+				(void)close(afd);
 				return bprintf("%d", v & 0xff);
 			}
 		}
