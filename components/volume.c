@@ -221,7 +221,12 @@
 					return NULL;
 				}
 				(void)close(afd);
-				return bprintf("%d", v & 0xff);
+				v &= 0xff;
+#ifdef MAX_PCT_99
+				if (v > 99)
+					v = 99;
+#endif
+				return bprintf("%d", v);
 			}
 		}
 
