@@ -122,7 +122,7 @@ fmt_human_3(uintmax_t num, int base)
 }
 
 int
-pscanf(const char *path, const char *fmt, ...)
+pscanf(const char *path, const char *fmt, ...) [[gnu::format(scanf, 2, 3)]]
 {
 	FILE *fp;
 	va_list ap;
